@@ -1,15 +1,15 @@
-add_executable(intro main.cpp)
+add_executable(mvpge main.cpp)
 
 target_link_libraries(
-  intro
+  mvpge
   PRIVATE MPVGE::MPVGE_options
           MPVGE::MPVGE_warnings)
 
 target_link_system_libraries(
-  intro
+  mvpge
   PRIVATE
           CLI11::CLI11
           fmt::fmt
           spdlog::spdlog)
 
-target_include_directories(intro PRIVATE "${CMAKE_BINARY_DIR}/configured_files/include")
+target_include_directories(mvpge PRIVATE "${CMAKE_BINARY_DIR}/configured_files/include")
