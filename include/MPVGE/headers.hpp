@@ -6,3 +6,5 @@
 #pragma once
 
 #include <mpvge_lib_core/mpvge_lib_core.hpp>
+#include <glfw/glfw3.h>
+#include <vulkan/vulkan.h>

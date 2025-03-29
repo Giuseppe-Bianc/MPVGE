@@ -20,9 +20,19 @@ endfunction()
 # CMAKE_CXX_FLAGS don't propagate out to other
 # targets
 function(MPVGE_setup_dependencies)
-
   # For each dependency, see if it's
   # already been provided to us by a parent project
+  if(NOT TARGET glfw)
+    CPMAddPackage(
+            NAME glfw
+            GIT_REPOSITORY https://github.com/glfw/glfw.git
+            GIT_TAG 3.4 # Use "master" for the latest version
+            OPTIONS
+            "GLFW_BUILD_EXAMPLES OFF"
+            "GLFW_BUILD_TESTS OFF"
+            "GLFW_BUILD_DOCS OFF"
+    )
+  endif()
   if (NOT TARGET glm::glm)
     CPMAddPackage(
             NAME glm

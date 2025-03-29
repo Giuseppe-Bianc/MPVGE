@@ -17,6 +17,7 @@ target_link_libraries(mpvge_lib
         MPVGE_warnings
         PUBLIC
         Vulkan::Vulkan
+        glfw
         MPVGE::mpvge_lib_core
 )
 

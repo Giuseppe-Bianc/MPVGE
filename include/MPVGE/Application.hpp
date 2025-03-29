@@ -13,6 +13,11 @@ namespace mpvge {
     public:
         Application();
         ~Application();
+        Application(const Application &) = delete;
+        Application &operator=(const Application &) = delete;
+        void run();
+    private:
+        GLFWwindow* window;
     };
 
 }  // namespace mpvge

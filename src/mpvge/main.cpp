@@ -20,5 +20,6 @@ int main(int argc, const char **argv) {
             return EXIT_SUCCESS;
         }
         mpvge::Application app_instance;
+        app_instance.run();
     } catch(const std::exception &e) { spdlog::error("Unhandled exception in main: {}", e.what()); }
 }
