@@ -9,8 +9,6 @@ target_link_system_libraries(
   mvpge
   PRIVATE
           CLI11::CLI11
-          fmt::fmt
-          spdlog::spdlog
           MPVGE::mpvge_lib)
 
 target_include_directories(mvpge PRIVATE "${CMAKE_BINARY_DIR}/configured_files/include")

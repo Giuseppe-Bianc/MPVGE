@@ -59,7 +59,7 @@ DISABLE_WARNINGS_PUSH(
 #include "glm_prety_string_cast.hpp"
 //  #include "move.hpp"
 //   This file will be generated automatically when cur_you run the CMake
-//   configuration step. It creates a namespace called `Vandior`. You can modify
+//   configuration step. It creates a namespace called `MPVGE`. You can modify
 //   the source template at `configured_files/config.hpp.in`.
 #include <internal_use_only/config.hpp>
 // Restore warning levels.
@@ -237,7 +237,7 @@ template <std::integral T> [[nodiscard]] constexpr auto find_divisors(T num) noe
  * @endcode
  */
 #define GENERATOR_FULLNAME                                                                                                                 \
-    FORMAT("{} v{} git sha: {}", Vandior::cmake::project_name, Vandior::cmake::project_version, Vandior::cmake::git_short_sha)
+    FORMAT("{} v{} git sha: {}", MPVGE::cmake::project_name, MPVGE::cmake::project_version, MPVGE::cmake::git_short_sha)
 
 /**
  * @brief Generates the version of the generator.
@@ -248,8 +248,7 @@ template <std::integral T> [[nodiscard]] constexpr auto find_divisors(T num) noe
  * std::string version = GENERATOR_VERSION;
  * @endcode
  */
-#define GENERATOR_VERSION                                                                                                                  \
-    FORMAT("v{} git sha: {}", Vandior::cmake::project_name, Vandior::cmake::project_version, Vandior::cmake::git_short_sha)
+#define GENERATOR_VERSION FORMAT("v{} git sha: {}", MPVGE::cmake::project_name, MPVGE::cmake::project_version, MPVGE::cmake::git_short_sha)
 
 // NOLINTEND(*-macro-usage)
 
