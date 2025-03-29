@@ -29,8 +29,6 @@ namespace mpvge {
         glm::vec4 vec;
         auto test = matrix * vec;
 
-        while(!glfwWindowShouldClose(window)) {
-            glfwPollEvents();
-        }
+        while(!glfwWindowShouldClose(window)) { glfwPollEvents(); }
     }
 }  // namespace mpvge
