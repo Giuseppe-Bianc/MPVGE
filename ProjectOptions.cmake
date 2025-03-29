@@ -5,17 +5,17 @@ include(CheckCXXCompilerFlag)
 
 
 macro(MPVGE_supports_sanitizers)
-  if((CMAKE_CXX_COMPILER_ID MATCHES ".*Clang.*" OR CMAKE_CXX_COMPILER_ID MATCHES ".*GNU.*") AND NOT WIN32)
+  if ((CMAKE_CXX_COMPILER_ID MATCHES ".*Clang.*" OR CMAKE_CXX_COMPILER_ID MATCHES ".*GNU.*") AND NOT WIN32)
     set(SUPPORTS_UBSAN ON)
-  else()
+  else ()
     set(SUPPORTS_UBSAN OFF)
-  endif()
+  endif ()
 
-  if((CMAKE_CXX_COMPILER_ID MATCHES ".*Clang.*" OR CMAKE_CXX_COMPILER_ID MATCHES ".*GNU.*") AND WIN32)
+  if ((CMAKE_CXX_COMPILER_ID MATCHES ".*Clang.*" OR CMAKE_CXX_COMPILER_ID MATCHES ".*GNU.*") AND WIN32)
     set(SUPPORTS_ASAN OFF)
-  else()
+  else ()
     set(SUPPORTS_ASAN ON)
-  endif()
+  endif ()
 endmacro()
 
 macro(MPVGE_setup_options)
@@ -60,7 +60,7 @@ macro(MPVGE_setup_options)
     option(MPVGE_ENABLE_CACHE "Enable ccache" ON)
   endif()
 
-  if(NOT PROJECT_IS_TOP_LEVEL)
+  if (NOT PROJECT_IS_TOP_LEVEL)
     mark_as_advanced(
       MPVGE_ENABLE_IPO
       MPVGE_WARNINGS_AS_ERRORS
@@ -81,15 +81,19 @@ macro(MPVGE_setup_options)
   MPVGE_check_libfuzzer_support(LIBFUZZER_SUPPORTED)
   if(LIBFUZZER_SUPPORTED AND (MPVGE_ENABLE_SANITIZER_ADDRESS OR MPVGE_ENABLE_SANITIZER_THREAD OR MPVGE_ENABLE_SANITIZER_UNDEFINED))
     set(DEFAULT_FUZZER ON)
-  else()
+  else ()
     set(DEFAULT_FUZZER OFF)
-  endif()
+  endif ()
 
   option(MPVGE_BUILD_FUZZ_TESTS "Enable fuzz testing executable" ${DEFAULT_FUZZER})
 
 endmacro()
 
 macro(MPVGE_global_options)
+  include(cmake/Simd.cmake)
+  check_all_simd_features()
+  print_simd_support()
+
   if(MPVGE_ENABLE_IPO)
     include(cmake/InterproceduralOptimization.cmake)
     MPVGE_enable_ipo()
@@ -105,7 +109,7 @@ macro(MPVGE_global_options)
        OR MPVGE_ENABLE_SANITIZER_THREAD
        OR MPVGE_ENABLE_SANITIZER_LEAK)
       set(ENABLE_UBSAN_MINIMAL_RUNTIME FALSE)
-    else()
+    else ()
       set(ENABLE_UBSAN_MINIMAL_RUNTIME TRUE)
     endif()
     message("${MPVGE_ENABLE_HARDENING} ${ENABLE_UBSAN_MINIMAL_RUNTIME} ${MPVGE_ENABLE_SANITIZER_UNDEFINED}")
