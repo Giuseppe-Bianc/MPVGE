@@ -6,9 +6,9 @@
 #include "MPVGE/Application.hpp"
 
 namespace mpvge {
-    UniqueGLFWwindow make_unique_glfw_window(int width, int height, const char *title)  {
+    UniqueGLFWwindow make_unique_glfw_window(int width, int height, const char *title) {
         // Create the window using GLFW.
-        GLFWwindow* rawWindow = glfwCreateWindow(width, height, title, nullptr, nullptr);
+        GLFWwindow *rawWindow = glfwCreateWindow(width, height, title, nullptr, nullptr);
         return UniqueGLFWwindow(rawWindow);
     }
     Application::Application() {
@@ -33,8 +33,6 @@ namespace mpvge {
         glm::vec4 vec;
         auto test = matrix * vec;
 
-        while(!glfwWindowShouldClose(window.get())) {
-            glfwPollEvents();
-        }
+        while(!glfwWindowShouldClose(window.get())) { glfwPollEvents(); }
     }
 }  // namespace mpvge
