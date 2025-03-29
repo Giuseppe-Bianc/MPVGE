@@ -6,15 +6,19 @@
 #include "MPVGE/Application.hpp"
 
 namespace mpvge {
+    UniqueGLFWwindow make_unique_glfw_window(int width, int height, const char *title)  {
+        // Create the window using GLFW.
+        GLFWwindow* rawWindow = glfwCreateWindow(width, height, title, nullptr, nullptr);
+        return UniqueGLFWwindow(rawWindow);
+    }
     Application::Application() {
         LINFO("Application constructor called");
         glfwInit();
 
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-        window = glfwCreateWindow(800, 600, "Vulkan window", nullptr, nullptr);
+        window = make_unique_glfw_window(800, 600, "Vulkan window");
     }
     Application::~Application() {
-        glfwDestroyWindow(window);
         glfwTerminate();
         LINFO("Application destructor called");
     }
@@ -29,7 +33,7 @@ namespace mpvge {
         glm::vec4 vec;
         auto test = matrix * vec;
 
-        while(!glfwWindowShouldClose(window)) {
+        while(!glfwWindowShouldClose(window.get())) {
             glfwPollEvents();
         }
     }
