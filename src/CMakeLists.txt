@@ -1,2 +1,2 @@
-add_subdirectory(sample_library)
+add_subdirectory(mpvge_lib)
 add_subdirectory(mpvge)
