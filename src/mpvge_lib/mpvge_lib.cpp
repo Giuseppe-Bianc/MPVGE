@@ -1,4 +1,4 @@
-#include <MPVGE/sample_library.hpp>
+#include <MPVGE/mpvge_lib.hpp>
 
 int factorial(int input) noexcept {
     int result = 1;

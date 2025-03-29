@@ -1,7 +1,7 @@
 include(GenerateExportHeader)
 
 
-add_library(mpvge_lib sample_library.cpp)
+add_library(mpvge_lib mpvge_lib.cpp)
 
 
 
