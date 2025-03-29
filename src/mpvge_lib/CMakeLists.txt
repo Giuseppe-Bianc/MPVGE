@@ -1,7 +1,9 @@
 include(GenerateExportHeader)
 
 find_package(Vulkan REQUIRED)
-add_library(mpvge_lib mpvge_lib.cpp)
+add_library(mpvge_lib mpvge_lib.cpp
+        Application.cpp
+        ../../include/MPVGE/Application.hpp)
 
 get_target_property(target_name mpvge_lib NAME)
 include("${CMAKE_SOURCE_DIR}/cmake/Simd.cmake")

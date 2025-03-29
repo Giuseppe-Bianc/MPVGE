@@ -19,6 +19,6 @@ int main(int argc, const char **argv) {
             fmt::print("{}\n", MPVGE::cmake::project_version);
             return EXIT_SUCCESS;
         }
-
+        mpvge::Application app_instance;
     } catch(const std::exception &e) { spdlog::error("Unhandled exception in main: {}", e.what()); }
 }
