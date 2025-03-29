@@ -19,6 +19,7 @@ namespace mpvge {
         window = make_unique_glfw_window(800, 600, "Vulkan window");
     }
     Application::~Application() {
+        glfwDestroyWindow(window);
         glfwTerminate();
         LINFO("Application destructor called");
     }

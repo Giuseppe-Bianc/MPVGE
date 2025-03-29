@@ -28,6 +28,7 @@ namespace mpvge {
         Application(const Application &) = delete;
         Application &operator=(const Application &) = delete;
         void run();
+
     private:
         UniqueGLFWwindow window;
     };
