@@ -36,7 +36,7 @@ function(MPVGE_setup_dependencies)
   endif ()
 
   if (NOT TARGET fmtlib::fmtlib)
-    CPMAddPackage("gh:fmtlib/fmt#11.1.3")
+    CPMAddPackage("gh:fmtlib/fmt#11.1.4")
   endif ()
 
   if (NOT TARGET spdlog::spdlog)
