@@ -3,14 +3,13 @@
  * Copyright (c) 2025 All rights reserved.
  */
 // NOLINTBEGIN(*-include-cleaner, *-easily-swappable-parameters, *-multiway-paths-covered, *-init-variables, *-qualified-auto)
-// #include "/Monitor.hpp"
-#include <MPVGE/Monitor.hpp>
 #include <MPVGE/VulkanCheck.hpp>
 #include <MPVGE/Window.hpp>
 
 namespace mpvge {
     DISABLE_WARNINGS_PUSH(26432 26447)
-    Window::Window(const int w, const int h, const std::string_view &window_name) noexcept : width(w), height(h), windowName(window_name) {
+    Window::Window(const int w, const int h, const std::string_view &window_name) noexcept
+      : width(w), height(h), windowName(window_name) {
         initWindow();
     }
 
@@ -23,6 +22,7 @@ namespace mpvge {
     void Window::initWindow() {
         initializeGLFW();
         setHints();
+        enumenrateMonitors();
         createWindow();
         centerWindow();
     }
@@ -39,6 +39,22 @@ namespace mpvge {
         }
         glfwSetKeyCallback(window, keyCallback);
     }
+
+    void Window::enumenrateMonitors() {
+        vnd::Timer monitort("get primary Monitor");
+        auto monitors = Monitor::enumerateMonitors();
+        if(monitors.empty()) {
+            throw std::runtime_error("Failed to enumerate monitors.");
+        }
+        for(const auto &monitor : monitors) {
+            if(monitor.getMonitorInfo().isPrimary) {
+                primaryMonitor = monitor;
+                break;
+            }
+        }
+        LINFO("{}", monitort);
+    }
+
 
     void Window::setHints() const noexcept {
         vnd::AutoTimer timer("set glfw hints");
@@ -65,21 +81,12 @@ namespace mpvge {
     }
 
     void Window::centerWindow() {
-        vnd::Timer monitort("get primary Monitor");
-        GLFWmonitor *primaryMonitor = glfwGetPrimaryMonitor();
-        if(!primaryMonitor) { throw std::runtime_error("Failed to get the primary monitor."); }
-        LINFO("{}", monitort);
-
-        vnd::Timer modet("get monitor informatoons");
-        const Monitor monitorInfo(primaryMonitor);
-        LINFO("{}", modet);
-
         vnd::Timer crepositiont("calculating for reposition");
         int windowWidth;
         int windowHeight;
         glfwGetWindowSize(window, &windowWidth, &windowHeight);
-        auto centerX = CALC_CENTRO(monitorInfo.getWidth(), windowWidth);
-        auto centerY = CALC_CENTRO(monitorInfo.getHeight(), windowHeight);
+        auto centerX = CALC_CENTRO(primaryMonitor.getMonitorInfo().width, windowWidth);
+        auto centerY = CALC_CENTRO(primaryMonitor.getMonitorInfo().height, windowHeight);
         LINFO("{}", crepositiont);
 
 #ifndef __linux__
@@ -95,10 +102,7 @@ namespace mpvge {
         glfwSetWindowUserPointer(window, this);
         // glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
         glfwShowWindow(window);
-        LINFO("Monitor:\"{}\", Phys:{}x{}mm, Scale:({}/{}), Pos:({}/{})", glfwGetMonitorName(primaryMonitor),
-              monitorInfo.getPhysicalWidth(), monitorInfo.getPhysicalHeight(), monitorInfo.getScaleX(), monitorInfo.getScaleY(),
-              monitorInfo.getXPos(), monitorInfo.getYPos());
-        LINFO("Monitor Mode:{}", monitorInfo.formatMode());
+        LINFO("Monitor: {}", primaryMonitor.getMonitorInfo());
         LINFO("Created the window {0}: (w: {1}, h: {2}, pos:({3}/{4}))", windowName.data(), width, height, centerX, centerY);
     }
 

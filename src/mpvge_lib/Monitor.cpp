@@ -6,26 +6,55 @@
 #include "MPVGE/Monitor.hpp"
 
 namespace mpvge {
-    Monitor::Monitor(GLFWmonitor *monitorin)
-      : monitor(monitorin), monitorWidth(0), monitorHeight(0), physicalWidth(0), physicalHeight(0), scaleX(0.0f), scaleY(0.0f), xPos(0),
-        yPos(0) {
-        if(!monitor) { throw std::runtime_error("Failed to get the primary monitor."); }
+    Monitor::Monitor(GLFWmonitor *monitorin, bool isPrimary) : monitor(monitorin) {
+        if(!monitor) {
+            throw std::runtime_error("Failed to get the primary monitor.");
+        }
+        fetchMonitorInfo(isPrimary);
+    }
+    void Monitor::fetchMonitorInfo(bool isPrimary) {
         mode = glfwGetVideoMode(monitor);
         if(!mode) { throw std::runtime_error("Failed to get video mode."); }
-        fetchMonitorInfo();
+        info.width = mode->width;
+        info.height = mode->height;
+        info.redBits = mode->redBits;
+        info.greenBits = mode->greenBits;
+        info.blueBits = mode->blueBits;
+        info.refreshRate = mode->refreshRate;
+        info.isPrimary = isPrimary;
+        info.name = glfwGetMonitorName(monitor);
+        glfwGetMonitorPos(monitor, &info.xPos, &info.yPos);
+        glfwGetMonitorContentScale(monitor, &info.scaleX, &info.scaleY);
+        glfwGetMonitorPhysicalSize(monitor, &info.physicalWidth, &info.physicalHeight);
     }
-
-    void Monitor::fetchMonitorInfo() noexcept {
-        monitorWidth = mode->width;
-        monitorHeight = mode->height;
-        glfwGetMonitorPos(monitor, &xPos, &yPos);
-        glfwGetMonitorContentScale(monitor, &scaleX, &scaleY);
-        glfwGetMonitorPhysicalSize(monitor, &physicalWidth, &physicalHeight);
+    void Monitor::setCustomMode(const GLFWvidmode *customMode) {
+        if(!customMode) { throw std::runtime_error("Failed to get custom video mode."); }
+        mode = customMode;
+        info.width = mode->width;
+        info.height = mode->height;
+        info.redBits = mode->redBits;
+        info.greenBits = mode->greenBits;
+        info.blueBits = mode->blueBits;
+        info.refreshRate = mode->refreshRate;
     }
+    std::vector<Monitor> Monitor::enumerateMonitors() {
+        std::vector<Monitor> monitorList;
+        int count;
+        GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
+        if (!primaryMonitor) {
+            throw std::runtime_error("Failed to get the primary monitor.");
+        }
+        monitorList.emplace_back(primaryMonitor, true);
+        GLFWmonitor **monitors = glfwGetMonitors(&count);
 
-    std::string Monitor::formatMode() const {
-        return FORMAT("({}x{}, Bits rgb{}{}{}, RR:{}Hz)", mode->width, mode->height, mode->redBits, mode->greenBits, mode->blueBits,
-                      mode->refreshRate);
+        for(int i = 0; i < count; ++i) {
+            // Salta il primary monitor per evitare duplicati.
+            if (monitors[i] == primaryMonitor) {
+                continue;
+            }
+            monitorList.emplace_back(monitors[i]);
+        }
+        return monitorList;
     }
 
 }  // namespace mpvge

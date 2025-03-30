@@ -7,6 +7,8 @@
 
 #include "WindowCallback.hpp"
 #include "headers.hpp"
+#include "Monitor.hpp"
+
 namespace mpvge {
 
     // static void framebufferResizeCallback(GLFWwindow *window, int width, int height) noexcept;
@@ -31,6 +33,7 @@ namespace mpvge {
         static void initializeGLFW();
 
     private:
+        void enumenrateMonitors();
         void initWindow();
 
         void createWindow();
@@ -44,6 +47,7 @@ namespace mpvge {
         int height;
         bool framebufferResized = false;
         std::string_view windowName;
+        Monitor primaryMonitor;
         GLFWwindow *window{nullptr};
     };
 }  // namespace mpvge
