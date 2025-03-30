@@ -7,9 +7,7 @@
 
 namespace mpvge {
     Monitor::Monitor(GLFWmonitor *monitorin, bool isPrimary) : monitor(monitorin) {
-        if(!monitor) {
-            throw std::runtime_error("Failed to get the primary monitor.");
-        }
+        if(!monitor) { throw std::runtime_error("Failed to get the primary monitor."); }
         fetchMonitorInfo(isPrimary);
     }
     void Monitor::fetchMonitorInfo(bool isPrimary) {
@@ -40,18 +38,14 @@ namespace mpvge {
     std::vector<Monitor> Monitor::enumerateMonitors() {
         std::vector<Monitor> monitorList;
         int count;
-        GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
-        if (!primaryMonitor) {
-            throw std::runtime_error("Failed to get the primary monitor.");
-        }
+        GLFWmonitor *primaryMonitor = glfwGetPrimaryMonitor();
+        if(!primaryMonitor) { throw std::runtime_error("Failed to get the primary monitor."); }
         monitorList.emplace_back(primaryMonitor, true);
         GLFWmonitor **monitors = glfwGetMonitors(&count);
 
         for(int i = 0; i < count; ++i) {
             // Salta il primary monitor per evitare duplicati.
-            if (monitors[i] == primaryMonitor) {
-                continue;
-            }
+            if(monitors[i] == primaryMonitor) { continue; }
             monitorList.emplace_back(monitors[i]);
         }
         return monitorList;

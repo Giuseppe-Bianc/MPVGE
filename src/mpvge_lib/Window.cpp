@@ -8,8 +8,7 @@
 
 namespace mpvge {
     DISABLE_WARNINGS_PUSH(26432 26447)
-    Window::Window(const int w, const int h, const std::string_view &window_name) noexcept
-      : width(w), height(h), windowName(window_name) {
+    Window::Window(const int w, const int h, const std::string_view &window_name) noexcept : width(w), height(h), windowName(window_name) {
         initWindow();
     }
 
@@ -43,9 +42,7 @@ namespace mpvge {
     void Window::enumenrateMonitors() {
         vnd::Timer monitort("get primary Monitor");
         auto monitors = Monitor::enumerateMonitors();
-        if(monitors.empty()) {
-            throw std::runtime_error("Failed to enumerate monitors.");
-        }
+        if(monitors.empty()) { throw std::runtime_error("Failed to enumerate monitors."); }
         for(const auto &monitor : monitors) {
             if(monitor.getMonitorInfo().isPrimary) {
                 primaryMonitor = monitor;
@@ -54,7 +51,6 @@ namespace mpvge {
         }
         LINFO("{}", monitort);
     }
-
 
     void Window::setHints() const noexcept {
         vnd::AutoTimer timer("set glfw hints");

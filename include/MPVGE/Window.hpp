@@ -5,9 +5,9 @@
 // NOLINTBEGIN(*-include-cleaner)
 #pragma once
 
+#include "Monitor.hpp"
 #include "WindowCallback.hpp"
 #include "headers.hpp"
-#include "Monitor.hpp"
 
 namespace mpvge {
 
