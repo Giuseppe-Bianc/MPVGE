@@ -9,7 +9,6 @@
 #include "headers.hpp"
 namespace mpvge {
 
-
     // static void framebufferResizeCallback(GLFWwindow *window, int width, int height) noexcept;
     // NOLINT(*-special-member-functions)
     class Window {
@@ -27,7 +26,7 @@ namespace mpvge {
         // void swapBuffers() const noexcept { glfwSwapBuffers(window); }
         void createWindowSurface(VkInstance instance, VkSurfaceKHR *surface);
 
-        //VkExtent2D getExtent() noexcept { return {C_UI32T(width), C_UI32T(height)}; }
+        // VkExtent2D getExtent() noexcept { return {C_UI32T(width), C_UI32T(height)}; }
 
         static void initializeGLFW();
 
@@ -39,14 +38,14 @@ namespace mpvge {
         void setHints() const noexcept;
 
         void centerWindow();
-        //static void framebufferResizeCallback(GLFWwindow *window, int width, int height) noexcept;
+        // static void framebufferResizeCallback(GLFWwindow *window, int width, int height) noexcept;
 
         int width;
         int height;
         bool framebufferResized = false;
         std::string_view windowName;
-        GLFWwindow* window{nullptr};
+        GLFWwindow *window{nullptr};
     };
-}  // namespace lve
+}  // namespace mpvge
 
 // NOLINTEND(*-include-cleaner)

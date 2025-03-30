@@ -7,7 +7,7 @@
 
 #include "headers.hpp"
 
-namespace  mpvge {
+namespace mpvge {
     class Monitor {
     public:
         explicit Monitor(GLFWmonitor *monitorin);
@@ -30,4 +30,4 @@ namespace  mpvge {
         float scaleX, scaleY;
         int xPos, yPos;
     };
-}  // namespace lve
+}  // namespace mpvge

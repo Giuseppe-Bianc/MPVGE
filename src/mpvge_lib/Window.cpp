@@ -31,7 +31,7 @@ namespace mpvge {
         vnd::AutoTimer timer("glfw_window creation");
 
         // Use std::unique_ptr with custom deleter
-        window = glfwCreateWindow(width, height, windowName.data() , nullptr, nullptr);
+        window = glfwCreateWindow(width, height, windowName.data(), nullptr, nullptr);
 
         if(window == nullptr) {
             glfwTerminate();
@@ -93,7 +93,7 @@ namespace mpvge {
 #endif
 
         glfwSetWindowUserPointer(window, this);
-        //glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
+        // glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
         glfwShowWindow(window);
         LINFO("Monitor:\"{}\", Phys:{}x{}mm, Scale:({}/{}), Pos:({}/{})", glfwGetMonitorName(primaryMonitor),
               monitorInfo.getPhysicalWidth(), monitorInfo.getPhysicalHeight(), monitorInfo.getScaleX(), monitorInfo.getScaleY(),

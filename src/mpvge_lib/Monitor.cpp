@@ -1,11 +1,11 @@
 /*
-* Created by derbinan on 14/03/25.
+ * Created by derbinan on 14/03/25.
  * Copyright (c) 2025 All rights reserved.
  */
 // NOLINTBEGIN(*-include-cleaner, *-uppercase-literal-suffix,*-uppercase-literal-suffix)
 #include "MPVGE/Monitor.hpp"
 
-namespace  mpvge {
+namespace mpvge {
     Monitor::Monitor(GLFWmonitor *monitorin)
       : monitor(monitorin), monitorWidth(0), monitorHeight(0), physicalWidth(0), physicalHeight(0), scaleX(0.0f), scaleY(0.0f), xPos(0),
         yPos(0) {
@@ -28,6 +28,6 @@ namespace  mpvge {
                       mode->refreshRate);
     }
 
-}  // namespace lve
+}  // namespace mpvge
 
 // NOLINTEND(*-include-cleaner, *-uppercase-literal-suffix,*-uppercase-literal-suffix)
