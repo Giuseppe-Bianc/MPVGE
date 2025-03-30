@@ -7,20 +7,9 @@
 
 #include "headers.hpp"
 
-namespace mpvge {
-    // Custom deleter for GLFWwindow.
-    struct GLFWwindowDeleter {
-        void operator()(GLFWwindow* window) const {
-            if (window) {
-                glfwDestroyWindow(window);
-            }
-        }
-    };
+#include "Window.hpp"
 
-    // A convenient alias for a unique_ptr managing a GLFWwindow.
-    using UniqueGLFWwindow = std::unique_ptr<GLFWwindow, GLFWwindowDeleter>;
-    // Helper function that creates a GLFWwindow and wraps it in a unique_ptr.
-    UniqueGLFWwindow make_unique_glfw_window(int width, int height, const char* title);
+namespace mpvge {
     class Application {
     public:
         Application();
@@ -30,7 +19,7 @@ namespace mpvge {
         void run();
 
     private:
-        UniqueGLFWwindow window;
+        Window window{wwidth, wheight, wtile};
     };
 
 }  // namespace mpvge
