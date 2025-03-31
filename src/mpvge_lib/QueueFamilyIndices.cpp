@@ -1,7 +1,7 @@
 /*
-* Created by gbian on 31/03/2025.
-* Copyright (c) 2025 All rights reserved.
-*/
+ * Created by gbian on 31/03/2025.
+ * Copyright (c) 2025 All rights reserved.
+ */
 
 #include "MPVGE/QueueFamilyIndices.hpp"
 
@@ -16,23 +16,13 @@ namespace mpvge {
         present_family_has_value_ = true;
     }
 
-    uint32_t QueueFamilyIndices::graphics_family() const noexcept {
-        return graphics_family_;
-    }
+    uint32_t QueueFamilyIndices::graphics_family() const noexcept { return graphics_family_; }
 
-    uint32_t QueueFamilyIndices::present_family() const noexcept {
-        return present_family_;
-    }
+    uint32_t QueueFamilyIndices::present_family() const noexcept { return present_family_; }
 
-    bool QueueFamilyIndices::has_graphics_family() const noexcept {
-        return graphics_family_has_value_;
-    }
+    bool QueueFamilyIndices::has_graphics_family() const noexcept { return graphics_family_has_value_; }
 
-    bool QueueFamilyIndices::has_present_family() const noexcept {
-        return present_family_has_value_;
-    }
+    bool QueueFamilyIndices::has_present_family() const noexcept { return present_family_has_value_; }
 
-    bool QueueFamilyIndices::is_complete() const noexcept {
-        return has_graphics_family() && has_present_family();
-    }
-} // mpvge
+    bool QueueFamilyIndices::is_complete() const noexcept { return has_graphics_family() && has_present_family(); }
+}  // namespace mpvge

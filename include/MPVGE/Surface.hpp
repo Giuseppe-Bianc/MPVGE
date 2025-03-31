@@ -6,11 +6,11 @@
 #pragma once
 
 #include "Instance.hpp"
+#include "QueueFamilyIndices.hpp"
+#include "SwapChainSupportDetails.hpp"
 #include "Window.hpp"
 #include "headers.hpp"
 #include "vulkanCheck.hpp"
-#include "QueueFamilyIndices.hpp"
-#include "SwapChainSupportDetails.hpp"
 
 namespace mpvge {
 
@@ -27,8 +27,7 @@ namespace mpvge {
         [[nodiscard]] VkSurfaceKHR get() { return surface; }
 
         [[nodiscard]] VkSurfaceKHR getSurface() const { return surface; }
-        [[nodiscard]]
-        VkSurfaceKHR get() const { return surface; }
+        [[nodiscard]] VkSurfaceKHR get() const { return surface; }
 
     private:
         VkSurfaceKHR surface{VK_NULL_HANDLE};

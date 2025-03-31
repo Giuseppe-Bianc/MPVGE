@@ -5,10 +5,10 @@
 
 #pragma once
 
+#include "DeviceInfo.hpp"
 #include "Instance.hpp"
 #include "Surface.hpp"
 #include "headers.hpp"
-#include "DeviceInfo.hpp"
 
 namespace mpvge {
 
@@ -21,6 +21,7 @@ namespace mpvge {
 
         [[nodiscard]] VkDevice get() { return device; }
         [[nodiscard]] VkPhysicalDeviceProperties getProperties() const { return properties; }
+
     private:
         void pickPhysicalDevice();
         bool isDeviceSuitable(VkPhysicalDevice device);
