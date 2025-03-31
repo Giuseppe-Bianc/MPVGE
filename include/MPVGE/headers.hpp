@@ -5,9 +5,10 @@
 // // NOLINTBEGIN(*-include-cleaner)
 #pragma once
 
-#include <glfw/glfw3.h>
+#define GLFW_INCLUDE_VULKAN
+#include <GLFW/glfw3.h>
 #include <mpvge_lib_core/mpvge_lib_core.hpp>
-#include <vulkan/vulkan.h>
+
 
 DISABLE_WARNINGS_PUSH(26426)
 static inline constexpr std::string_view wtile = MPVGE::cmake::project_name;

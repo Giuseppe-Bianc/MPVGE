@@ -28,7 +28,7 @@ namespace mpvge {
         // void swapBuffers() const noexcept { glfwSwapBuffers(window); }
         void createWindowSurface(VkInstance instance, VkSurfaceKHR *surface);
 
-        // VkExtent2D getExtent() noexcept { return {C_UI32T(width), C_UI32T(height)}; }
+        VkExtent2D getExtent() noexcept { return {C_UI32T(width), C_UI32T(height)}; }
 
         static void initializeGLFW();
 

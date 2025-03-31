@@ -15,6 +15,7 @@ namespace mpvge {
     Window::~Window() {
         glfwDestroyWindow(window);
         glfwTerminate();
+        LINFO("Window destroyed");
     }
     DISABLE_WARNINGS_POP()
 
@@ -61,7 +62,6 @@ namespace mpvge {
         // glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_TRUE);
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
     }
-
     void Window::initializeGLFW() {
         vnd::AutoTimer timer("glfw setup");
         if(!glfwInit()) {
@@ -102,9 +102,9 @@ namespace mpvge {
         LINFO("Created the window {0}: (w: {1}, h: {2}, pos:({3}/{4}))", windowName.data(), width, height, centerX, centerY);
     }
 
-    /*void Window::createWindowSurface(VkInstance instance, VkSurfaceKHR *surface) {
+    void Window::createWindowSurface(VkInstance instance, VkSurfaceKHR *surface) {
         VK_CHECK(glfwCreateWindowSurface(instance, window, nullptr, surface), "failed to craete window surface");
-    }*/
+    }
 
     /*void Window::framebufferResizeCallback(GLFWwindow *window, int width, int height) noexcept {
         auto lveWindow = static_cast<Window *>(glfwGetWindowUserPointer(window));

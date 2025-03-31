@@ -5,7 +5,14 @@ add_library(mpvge_lib mpvge_lib.cpp
         Application.cpp
         ../../include/MPVGE/Application.hpp
         Window.cpp
-        Monitor.cpp)
+        ../../include/MPVGE/Window.hpp
+        Monitor.cpp
+        ../../include/MPVGE/Monitor.hpp
+        Instance.cpp
+        ../../include/MPVGE/Instance.hpp
+        Surface.cpp
+        ../../include/MPVGE/Surface.hpp
+)
 
 get_target_property(target_name mpvge_lib NAME)
 include("${CMAKE_SOURCE_DIR}/cmake/Simd.cmake")
