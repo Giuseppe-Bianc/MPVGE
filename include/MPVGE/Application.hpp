@@ -4,13 +4,9 @@
  */
 
 #pragma once
-
-/*#include "Device.hpp"
-#include "Device.hpp"
-#include "Pipeline.hpp"
-#include "SwapChain.hpp"*/
 #include "headers.hpp"
 
+#include "Device.hpp"
 #include "Instance.hpp"
 #include "Surface.hpp"
 #include "Window.hpp"

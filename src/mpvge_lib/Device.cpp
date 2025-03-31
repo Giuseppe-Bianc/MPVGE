@@ -3,7 +3,7 @@
  * Copyright (c) 2025 All rights reserved.
  */
 // NOLINTBEGIN(*-include-cleaner)
-#include "Device.hpp"
+#include "../../include/MPVGE/Device.hpp"
 
 namespace mpvge {
     Device::Device(Instance &instancein, Surface &surfacein) : instance{instancein}, surface{surfacein} {
