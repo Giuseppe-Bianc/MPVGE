@@ -12,6 +12,8 @@ add_library(mpvge_lib mpvge_lib.cpp
         ../../include/MPVGE/Instance.hpp
         Surface.cpp
         ../../include/MPVGE/Surface.hpp
+        ../../include/MPVGE/Device.cpp
+        ../../include/MPVGE/Device.hpp
 )
 
 get_target_property(target_name mpvge_lib NAME)

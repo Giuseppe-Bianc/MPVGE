@@ -8,6 +8,7 @@
 /*#include "Device.hpp"
 #include "Pipeline.hpp"
 #include "SwapChain.hpp"*/
+#include "Device.hpp"
 #include "headers.hpp"
 
 #include "Instance.hpp"
@@ -32,6 +33,7 @@ namespace mpvge {
         Window window{wwidth, wheight, wtile};
         Instance instance{wtile.data(), enableValidationLayers};
         Surface surface{instance, window};
+        Device device{instance, surface};
 
         /*Device device{window};
         //Pipeline pipeline{device, calculateRelativePathToShaders(curentP, "simple_shader.vert.opt.rmp.spv").string(),
