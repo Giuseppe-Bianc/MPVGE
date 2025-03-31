@@ -14,6 +14,10 @@ add_library(mpvge_lib mpvge_lib.cpp
         ../../include/MPVGE/Surface.hpp
         Device.cpp
         ../../include/MPVGE/Device.hpp
+        QueueFamilyIndices.cpp
+        ../../include/MPVGE/QueueFamilyIndices.hpp
+        SwapChainSupportDetails.cpp
+        ../../include/MPVGE/SwapChainSupportDetails.hpp
 )
 
 get_target_property(target_name mpvge_lib NAME)

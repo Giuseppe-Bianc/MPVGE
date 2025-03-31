@@ -9,6 +9,8 @@
 #include "Window.hpp"
 #include "headers.hpp"
 #include "vulkanCheck.hpp"
+#include "QueueFamilyIndices.hpp"
+#include "SwapChainSupportDetails.hpp"
 
 namespace mpvge {
 
@@ -19,6 +21,13 @@ namespace mpvge {
         Surface(const Surface &) = delete;
         Surface &operator=(const Surface &) = delete;
 
+        QueueFamilyIndices getQueueFamilyIndices(VkPhysicalDevice device);
+        SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
+
+        [[nodiscard]] VkSurfaceKHR get() { return surface; }
+
+        [[nodiscard]] VkSurfaceKHR getSurface() const { return surface; }
+        [[nodiscard]]
         VkSurfaceKHR get() const { return surface; }
 
     private:

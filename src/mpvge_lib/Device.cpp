@@ -26,7 +26,50 @@ namespace mpvge {
 
         std::vector<VkPhysicalDevice> devices(deviceCount);
         vkEnumeratePhysicalDevices(instance.get(), &deviceCount, devices.data());
-        LINFO("found {} devices", deviceCount);
+
+        std::size_t deviceIndex = 0;
+        for(const auto &[index, pdevice] : devices | std::views::enumerate) {
+            if(isDeviceSuitable(pdevice)) {
+                physicalDevice = pdevice;
+                deviceIndex = index;
+                break;
+            }
+        }
+        if(physicalDevice == VK_NULL_HANDLE) { throw std::runtime_error("failed to find a suitable GPU!"); }
+        vkGetPhysicalDeviceProperties(physicalDevice, &properties);
+        VLINFO("Device index: {}", deviceIndex);
+        printDeviceInfo(physicalDevice, properties);
+    }
+
+    bool Device::isDeviceSuitable(VkPhysicalDevice devicein) {
+        QueueFamilyIndices indices = surface.getQueueFamilyIndices(devicein);
+        const bool extensionsSupported = checkDeviceExtensionSupport(devicein);
+        bool swapChainAdequate = false;
+        if(extensionsSupported) {
+            SwapChainSupportDetails swapChainSupport = surface.querySwapChainSupport(devicein);
+            swapChainAdequate = swapChainSupport.isAdequate();
+        }
+
+        VkPhysicalDeviceFeatures supportedFeatures;
+        vkGetPhysicalDeviceFeatures(devicein, &supportedFeatures);
+        return indices.is_complete() && extensionsSupported && swapChainAdequate && supportedFeatures.samplerAnisotropy;
+    }
+
+    bool Device::checkDeviceExtensionSupport(VkPhysicalDevice devicein) {
+        uint32_t extensionCount{};
+        vkEnumerateDeviceExtensionProperties(devicein, nullptr, &extensionCount, nullptr);
+
+        std::vector<VkExtensionProperties> availableExtensions(extensionCount);
+        vkEnumerateDeviceExtensionProperties(devicein, nullptr, &extensionCount, availableExtensions.data());
+
+        std::set<std::string> requiredExtensions(deviceExtensions.begin(), deviceExtensions.end());
+
+        for(const auto &extension : availableExtensions) {
+            // NOLINTNEXTLINE(*-pro-bounds-array-to-pointer-decay, *-no-array-decay)
+            requiredExtensions.erase(extension.extensionName);
+        }
+
+        return requiredExtensions.empty();
     }
 
 }  // namespace mpvge
