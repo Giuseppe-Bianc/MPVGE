@@ -6,15 +6,11 @@
 #include "MPVGE/Application.hpp"
 
 namespace mpvge {
-    Application::Application() {
-        LINFO("Application constructor called");
-    }
-    Application::~Application() { }
+    Application::Application() { LINFO("Application constructor called"); }
+    Application::~Application() {}
 
     void Application::run() {
         LINFO("Application run called");
-        while(!window.shouldClose()) {
-            glfwPollEvents();
-        }
+        while(!window.shouldClose()) { glfwPollEvents(); }
     }
 }  // namespace mpvge

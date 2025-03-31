@@ -1,7 +1,7 @@
 /*
-* Created by gbian on 31/03/2025.
-* Copyright (c) 2025 All rights reserved.
-*/
+ * Created by gbian on 31/03/2025.
+ * Copyright (c) 2025 All rights reserved.
+ */
 // // NOLINTBEGIN(*-include-cleaner)
 #include "MPVGE/Surface.hpp"
 
@@ -18,6 +18,6 @@ namespace mpvge {
         LINFO("Surface destroyed");
     }
 
-} // mpvge
+}  // namespace mpvge
 
 // NOLINTEND(*-include-cleaner)

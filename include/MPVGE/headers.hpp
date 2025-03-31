@@ -9,7 +9,6 @@
 #include <GLFW/glfw3.h>
 #include <mpvge_lib_core/mpvge_lib_core.hpp>
 
-
 DISABLE_WARNINGS_PUSH(26426)
 static inline constexpr std::string_view wtile = MPVGE::cmake::project_name;
 // static inline constexpr std::size_t factor = 80;
