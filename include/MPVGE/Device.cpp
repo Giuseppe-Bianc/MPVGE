@@ -6,7 +6,7 @@
 #include "Device.hpp"
 
 namespace mpvge {
-    Device::Device(Instance &instancein, Surface &surfacein) : instance{instancein}, surface{surfacein}{
+    Device::Device(Instance &instancein, Surface &surfacein) : instance{instancein}, surface{surfacein} {
         pickPhysicalDevice();
         LINFO("Device created");
     }

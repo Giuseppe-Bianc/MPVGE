@@ -6,9 +6,9 @@
 #pragma once
 
 /*#include "Device.hpp"
+#include "Device.hpp"
 #include "Pipeline.hpp"
 #include "SwapChain.hpp"*/
-#include "Device.hpp"
 #include "headers.hpp"
 
 #include "Instance.hpp"
