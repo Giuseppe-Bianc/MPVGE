@@ -14,7 +14,7 @@ namespace mpvge {
 
     class Device {
     public:
-        Device(Instance &instancein, Surface &surfacein);
+        Device(Instance &instancein, Surface &surfacein, bool enableValidationLayersin);
         ~Device();
         Device(const Device &) = delete;
         Device &operator=(const Device &) = delete;
@@ -26,6 +26,8 @@ namespace mpvge {
         void pickPhysicalDevice();
         bool isDeviceSuitable(VkPhysicalDevice device);
         bool checkDeviceExtensionSupport(VkPhysicalDevice device);
+        void createLogicalDevice();
+        bool enableValidationLayers;
         VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
         VkDevice device = VK_NULL_HANDLE;
         VkPhysicalDeviceProperties properties;

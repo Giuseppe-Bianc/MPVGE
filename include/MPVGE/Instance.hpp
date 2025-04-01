@@ -31,7 +31,6 @@ namespace mpvge {
         VkInstance instance{VK_NULL_HANDLE};
         bool enableValidationLayers;
         VkDebugUtilsMessengerEXT debugMessenger{VK_NULL_HANDLE};
-        const std::vector<const char *> validationLayers = {"VK_LAYER_KHRONOS_validation"};
     };
 
 }  // namespace mpvge

@@ -3,11 +3,14 @@
  * Copyright (c) 2025 All rights reserved.
  */
 // NOLINTBEGIN(*-include-cleaner)
-#include "../../include/MPVGE/Device.hpp"
+#include "MPVGE/Device.hpp"
 
 namespace mpvge {
-    Device::Device(Instance &instancein, Surface &surfacein) : instance{instancein}, surface{surfacein} {
+    static inline constexpr float queuePriority = 1.0f;
+
+    Device::Device(Instance &instancein, Surface &surfacein, bool enableValidationLayersin) : instance{instancein}, surface{surfacein}, enableValidationLayers{enableValidationLayersin} {
         pickPhysicalDevice();
+        createLogicalDevice();
         LINFO("Device created");
     }
 
@@ -67,6 +70,55 @@ namespace mpvge {
         }
 
         return requiredExtensions.empty();
+    }
+
+    void Device::createLogicalDevice() {
+        const QueueFamilyIndices indices = surface.getQueueFamilyIndices(physicalDevice);
+
+        std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
+        std::set<uint32_t> uniqueQueueFamilies = {indices.graphics_family(), indices.present_family()};
+
+        for(const uint32_t queueFamily : uniqueQueueFamilies) {
+            VkDeviceQueueCreateInfo queueCreateInfo = {};
+            queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+            queueCreateInfo.queueFamilyIndex = queueFamily;
+            queueCreateInfo.queueCount = 1;
+            queueCreateInfo.pQueuePriorities = &queuePriority;
+            queueCreateInfos.push_back(queueCreateInfo);
+        }
+
+        VkPhysicalDeviceFeatures deviceFeatures = {};
+        deviceFeatures.samplerAnisotropy = VK_TRUE;
+
+        VkDeviceCreateInfo createInfo = {};
+        createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+
+        createInfo.queueCreateInfoCount = C_UI32T(queueCreateInfos.size());
+        createInfo.pQueueCreateInfos = queueCreateInfos.data();
+
+        createInfo.pEnabledFeatures = &deviceFeatures;
+        createInfo.enabledExtensionCount = C_UI32T(deviceExtensions.size());
+        createInfo.ppEnabledExtensionNames = deviceExtensions.data();
+
+        // might not really be necessary anymore because device specific validation layers
+        // have been deprecated
+#ifdef NDEBUG
+        if(enableValidationLayers) [[unlikely]] {
+            createInfo.enabledLayerCount = NC_UI32T(validationLayers.size());
+            createInfo.ppEnabledLayerNames = validationLayers.data();
+        } else [[likely]] {
+            createInfo.enabledLayerCount = 0;
+        }
+#else
+        if(enableValidationLayers) [[likely]] {
+            createInfo.enabledLayerCount = NC_UI32T(validationLayers.size());
+            createInfo.ppEnabledLayerNames = validationLayers.data();
+        } else [[unlikely]] {
+            createInfo.enabledLayerCount = 0;
+        }
+#endif
+
+        VK_CHECK(vkCreateDevice(physicalDevice, &createInfo, nullptr, &device), "failed to create logical device!");
     }
 
 }  // namespace mpvge

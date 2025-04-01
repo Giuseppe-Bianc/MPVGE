@@ -26,6 +26,7 @@ static inline constexpr auto uint64Max = C_UI64T(std::numeric_limits<uint64_t>::
 static inline constexpr auto fepsilon = std::numeric_limits<float>::epsilon();
 static inline constexpr auto glm2pi = glm::two_pi<float>();
 static inline const auto curentP = fs::current_path();
+static inline const std::vector<const char *> validationLayers = {"VK_LAYER_KHRONOS_validation"};
 DISABLE_WARNINGS_POP()
 
 [[nodiscard]] static constexpr auto calcolaCentro(const int &width, const int &w) noexcept { return (width - w) / 2; }

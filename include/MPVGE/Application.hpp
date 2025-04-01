@@ -29,7 +29,7 @@ namespace mpvge {
         Window window{wwidth, wheight, wtile};
         Instance instance{wtile.data(), enableValidationLayers};
         Surface surface{instance, window};
-        Device device{instance, surface};
+        Device device{instance, surface, enableValidationLayers};
 
         /*Device device{window};
         //Pipeline pipeline{device, calculateRelativePathToShaders(curentP, "simple_shader.vert.opt.rmp.spv").string(),
