@@ -45,7 +45,7 @@ namespace mpvge {
                 }
             }
             if(!layerFound) {
-                LERROR("Validation layer {}  not supported!",layerName);
+                LERROR("Validation layer {}  not supported!", layerName);
                 return false;
             }
         }
