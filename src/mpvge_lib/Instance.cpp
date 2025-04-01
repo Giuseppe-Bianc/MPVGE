@@ -105,7 +105,6 @@ namespace mpvge {
         }
 #endif
 
-
         VK_CHECK(vkCreateInstance(&createInfo, nullptr, &instance), "Failed to create instance");
 
         hasGflwRequiredInstanceExtensions(extensions);
