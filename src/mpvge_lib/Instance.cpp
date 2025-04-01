@@ -67,35 +67,47 @@ namespace mpvge {
         LINFO("Instance destroyed");
     }
     void Instance::createInstance(const char *app_name) {
+        if(enableValidationLayers && !checkValidationLayerSupport()) {
+            throw std::runtime_error("Validation layers requested but not available!");
+        }
+
         VkApplicationInfo appInfo{};
         appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
         appInfo.pApplicationName = app_name;
-        appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
+        appInfo.applicationVersion = VK_MAKE_API_VERSION(0, 1, 0, 0);
         appInfo.pEngineName = "No Engine";
-        appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
+        appInfo.engineVersion = VK_MAKE_API_VERSION(0, 1, 0, 0);
         appInfo.apiVersion = VK_API_VERSION_1_3;
 
         VkInstanceCreateInfo createInfo{};
         createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
         createInfo.pApplicationInfo = &appInfo;
 
-        auto extensions = getRequiredExtensions();
+        const auto extensions = getRequiredExtensions();
         createInfo.enabledExtensionCount = C_UI32T(extensions.size());
         createInfo.ppEnabledExtensionNames = extensions.data();
 
-        if(enableValidationLayers) {
-            createInfo.enabledLayerCount = C_UI32T(validationLayers.size());
+#ifdef NDEBUG
+        if(enableValidationLayers) [[unlikely]] {
+            createInfo.enabledLayerCount = NC_UI32T(validationLayers.size());
             createInfo.ppEnabledLayerNames = validationLayers.data();
-        } else {
+        } else [[likely]] {
             createInfo.enabledLayerCount = 0;
             createInfo.ppEnabledLayerNames = nullptr;
         }
-
-        if(enableValidationLayers && !checkValidationLayerSupport()) {
-            throw std::runtime_error("Validation layers requested but not available!");
+#else
+        if(enableValidationLayers) [[likely]] {
+            createInfo.enabledLayerCount = NC_UI32T(validationLayers.size());
+            createInfo.ppEnabledLayerNames = validationLayers.data();
+        } else [[unlikely]] {
+            createInfo.enabledLayerCount = 0;
+            createInfo.ppEnabledLayerNames = nullptr;
         }
+#endif
+
 
         VK_CHECK(vkCreateInstance(&createInfo, nullptr, &instance), "Failed to create instance");
+
         hasGflwRequiredInstanceExtensions(extensions);
     }
 
