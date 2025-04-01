@@ -27,7 +27,7 @@ namespace mpvge {
         static void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger,
                                                   const VkAllocationCallbacks *pAllocator);
         void setupDebugMessenger();
-        void hasGflwRequiredInstanceExtensions();
+        void hasGflwRequiredInstanceExtensions(const std::vector<const char *> &requiredExtensions);
         VkInstance instance{VK_NULL_HANDLE};
         bool enableValidationLayers;
         VkDebugUtilsMessengerEXT debugMessenger{VK_NULL_HANDLE};

@@ -45,7 +45,7 @@ namespace mpvge {
                 }
             }
             if(!layerFound) {
-                std::cerr << "Validation layer " << layerName << " not supported!" << std::endl;
+                LERROR("Validation layer {}  not supported!",layerName);
                 return false;
             }
         }
@@ -102,7 +102,7 @@ namespace mpvge {
         }
 
         VK_CHECK(vkCreateInstance(&createInfo, nullptr, &instance), "Failed to create instance");
-        hasGflwRequiredInstanceExtensions();
+        hasGflwRequiredInstanceExtensions(extensions);
     }
 
     std::vector<const char *> Instance::getRequiredExtensions() {
@@ -144,7 +144,7 @@ namespace mpvge {
         if(func != nullptr) { func(instance, debugMessenger, pAllocator); }
     }
 
-    void Instance::hasGflwRequiredInstanceExtensions() {
+    void Instance::hasGflwRequiredInstanceExtensions(const std::vector<const char *> &requiredExtensions) {
 #ifdef INDEPTH
         vnd::AutoTimer t{"hasGflwRequiredInstanceExtensions", vnd::Timer::Big};
 #endif
@@ -166,7 +166,6 @@ namespace mpvge {
             available.emplace(extensionName);
         }
 
-        const auto requiredExtensions = getRequiredExtensions();
         if(!std::ranges::all_of(requiredExtensions, [&](const auto &required) { return available.contains(required); })) [[unlikely]] {
             throw std::runtime_error("Missing required GLFW extension");
         }
