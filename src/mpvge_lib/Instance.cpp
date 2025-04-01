@@ -60,16 +60,10 @@ namespace mpvge {
 
     Instance::~Instance() {
         if(enableValidationLayers) {
-            if(debugMessenger != VK_NULL_HANDLE) {
-                DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
-                debugMessenger = VK_NULL_HANDLE;
-            }
+            DESTROY_VK_HANDLE(debugMessenger, DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr));
             LINFO("Debug messenger destroyed");
         }
-        if(instance != VK_NULL_HANDLE) {
-            vkDestroyInstance(instance, nullptr);
-            instance = VK_NULL_HANDLE;
-        }
+        DESTROY_VK_HANDLE(instance, vkDestroyInstance(instance, nullptr));
         LINFO("Instance destroyed");
     }
     void Instance::createInstance(const char *app_name) {
@@ -86,11 +80,11 @@ namespace mpvge {
         createInfo.pApplicationInfo = &appInfo;
 
         auto extensions = getRequiredExtensions();
-        createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
+        createInfo.enabledExtensionCount = C_UI32T(extensions.size());
         createInfo.ppEnabledExtensionNames = extensions.data();
 
         if(enableValidationLayers) {
-            createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
+            createInfo.enabledLayerCount = C_UI32T(validationLayers.size());
             createInfo.ppEnabledLayerNames = validationLayers.data();
         } else {
             createInfo.enabledLayerCount = 0;

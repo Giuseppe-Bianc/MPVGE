@@ -34,7 +34,7 @@ inline static void printMessageWhitSeverity(const std::string &msg, VkDebugUtils
 
 inline static void logQueueLabel(const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
                                  const VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity) {
-    for(uint32_t i = 0; i < pCallbackData->queueLabelCount; ++i) {
+    for(std::size_t i = 0; i < pCallbackData->queueLabelCount; ++i) {
         std::string_view labelName = pCallbackData->pQueueLabels[i].pLabelName ? pCallbackData->pQueueLabels[i].pLabelName : "Unknown";
         const auto msg = FORMAT("Queue Label [{}]: {}", i, labelName);
 
@@ -44,7 +44,7 @@ inline static void logQueueLabel(const VkDebugUtilsMessengerCallbackDataEXT *pCa
 
 inline static void logCmdBuffers(const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
                                  const VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity) {
-    for(uint32_t i = 0; i < pCallbackData->cmdBufLabelCount; ++i) {
+    for(std::size_t i = 0; i < pCallbackData->cmdBufLabelCount; ++i) {
         std::string_view labelName = pCallbackData->pCmdBufLabels[i].pLabelName ? pCallbackData->pCmdBufLabels[i].pLabelName : "Unknown";
         const auto msg = FORMAT("Command Buffer Label[{}] - {} {{ {}, {}, {}, {} }}", i, labelName,
                                 pCallbackData->pCmdBufLabels[i].color[0], pCallbackData->pCmdBufLabels[i].color[1],
@@ -56,7 +56,7 @@ inline static void logCmdBuffers(const VkDebugUtilsMessengerCallbackDataEXT *pCa
 
 inline static void logObjects(const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
                               const VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity) {
-    for(uint32_t i = 0; i < pCallbackData->objectCount; ++i) {
+    for(std::size_t i = 0; i < pCallbackData->objectCount; ++i) {
         std::string_view objectName = pCallbackData->pObjects[i].pObjectName ? pCallbackData->pObjects[i].pObjectName : "Unknown";
         const auto objectType = pCallbackData->pObjects[i].objectType;
         const auto objhandle = pCallbackData->pObjects[i].objectHandle;

@@ -12,10 +12,7 @@ namespace mpvge {
     }
 
     Device::~Device() {
-        if(device != VK_NULL_HANDLE) {
-            vkDestroyDevice(device, nullptr);
-            device = VK_NULL_HANDLE;
-        }
+        DESTROY_VK_HANDLE(physicalDevice, vkDestroyDevice(device, nullptr));
         LINFO("Device destroyed");
     }
 

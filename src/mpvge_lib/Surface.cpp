@@ -11,10 +11,7 @@ namespace mpvge {
         LINFO("Surface created");
     }
     Surface::~Surface() {
-        if(surface != VK_NULL_HANDLE) {
-            vkDestroySurfaceKHR(instance.get(), surface, nullptr);
-            surface = VK_NULL_HANDLE;
-        }
+        DESTROY_VK_HANDLE(surface, vkDestroySurfaceKHR(instance.get(), surface, nullptr));
         LINFO("Surface destroyed");
     }
     QueueFamilyIndices Surface::getQueueFamilyIndices(VkPhysicalDevice device) {

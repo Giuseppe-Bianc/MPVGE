@@ -153,7 +153,7 @@ static inline void printQueueFamilies(VkPhysicalDevice device) {
     vkGetPhysicalDeviceQueueFamilyProperties(device, &count, queues.data());
 
     VLINFO("=== Queue Families ({} total) ===", count);
-    for(uint32_t i = 0; i < queues.size(); ++i) {
+    for(std::size_t i = 0; i < queues.size(); ++i) {
         const auto &q = queues[i];
         VLINFO("Family {:2}: {:2} queues | {}", i, q.queueCount, VkQueueFlagsString(q.queueFlags));
     }

@@ -57,4 +57,10 @@ inline fs::path calculateRelativePathToModels(const fs::path &executablePath, co
     return calculateRelativePathToSrc(executablePath, targetFile, "models");
 }
 
+#define DESTROY_VK_HANDLE(handle, destroy_call)                                                                                            \
+    if((handle) != VK_NULL_HANDLE) {                                                                                                       \
+        destroy_call;                                                                                                                      \
+        (handle) = VK_NULL_HANDLE;                                                                                                         \
+    }
+
 // NOLINTEND(*-include-cleaner)
