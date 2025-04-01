@@ -8,7 +8,8 @@
 namespace mpvge {
     static inline constexpr float queuePriority = 1.0f;
 
-    Device::Device(Instance &instancein, Surface &surfacein, bool enableValidationLayersin) : instance{instancein}, surface{surfacein}, enableValidationLayers{enableValidationLayersin} {
+    Device::Device(Instance &instancein, Surface &surfacein, bool enableValidationLayersin)
+      : instance{instancein}, surface{surfacein}, enableValidationLayers{enableValidationLayersin} {
         pickPhysicalDevice();
         createLogicalDevice();
         LINFO("Device created");
