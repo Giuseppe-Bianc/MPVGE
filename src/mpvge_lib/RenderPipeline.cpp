@@ -8,17 +8,17 @@
 namespace mpvge {
 
     RenderPipeline::RenderPipeline(Device &devicein, const std::string &vertFilepath, const std::string &fragFilepath,
-                             const PipelineConfigInfo &configInfo)
+                                   const PipelineConfigInfo &configInfo)
       : device{devicein} {
         createGraphicsPipeline(vertFilepath, fragFilepath, configInfo);
     }
 
     RenderPipeline::~RenderPipeline() {
-        DESTROY_VK_HANDLE(vertShaderModule,vkDestroyShaderModule(device.getDevice(), vertShaderModule, nullptr));
+        DESTROY_VK_HANDLE(vertShaderModule, vkDestroyShaderModule(device.getDevice(), vertShaderModule, nullptr));
         LINFO("Vertex Shader Module destroyed");
-        DESTROY_VK_HANDLE(fragShaderModule,vkDestroyShaderModule(device.getDevice(), fragShaderModule, nullptr));
+        DESTROY_VK_HANDLE(fragShaderModule, vkDestroyShaderModule(device.getDevice(), fragShaderModule, nullptr));
         LINFO("Fragment Shader Module destroyed");
-        DESTROY_VK_HANDLE(graphicsPipeline,vkDestroyPipeline(device.getDevice(), graphicsPipeline, nullptr));
+        DESTROY_VK_HANDLE(graphicsPipeline, vkDestroyPipeline(device.getDevice(), graphicsPipeline, nullptr));
         LINFO("Graphics Pipeline destroyed");
     }
 
@@ -38,7 +38,7 @@ namespace mpvge {
     }
 
     void RenderPipeline::createGraphicsPipeline(const std::string &vertFilepath, const std::string &fragFilepath,
-                                             const PipelineConfigInfo &configInfo) {
+                                                const PipelineConfigInfo &configInfo) {
         assert(configInfo.pipelineLayout != VK_NULL_HANDLE && "Cannot create graphics pipeline: no pipelineLayout provided in configInfo");
         assert(configInfo.renderPass != VK_NULL_HANDLE && "Cannot create graphics pipeline: no renderPass provided in configInfo");
 
@@ -94,7 +94,7 @@ namespace mpvge {
         pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
         VK_CHECK(vkCreateGraphicsPipelines(device.getDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline),
-                   "failed to create graphics pipeline");
+                 "failed to create graphics pipeline");
     }
 
     void RenderPipeline::createShaderModule(const std::vector<char> &code, VkShaderModule *shaderModule) {
@@ -103,8 +103,7 @@ namespace mpvge {
         createInfo.codeSize = code.size();
         createInfo.pCode = reinterpret_cast<const uint32_t *>(code.data());
 
-        VK_CHECK(vkCreateShaderModule(device.getDevice(), &createInfo, nullptr, shaderModule),
-                   "failed to create shader module");
+        VK_CHECK(vkCreateShaderModule(device.getDevice(), &createInfo, nullptr, shaderModule), "failed to create shader module");
     }
 
     PipelineConfigInfo RenderPipeline::defaultPipelineConfigInfo(uint32_t width, uint32_t height) {
