@@ -2,7 +2,7 @@
  * Created by gbian on 31/03/2025.
  * Copyright (c) 2025 All rights reserved.
  */
-
+// NOLINTBEGIN(*-include-cleaner)
 #pragma once
 
 #include "headers.hpp"
@@ -34,6 +34,5 @@ namespace mpvge {
     };
 
 }  // namespace mpvge
-   /* VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const
-      VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger);    void DestroyDebugUtilsMessengerEXT(VkInstance instance,
-      VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator);*/
+
+// NOLINTEND(*-include-cleaner)

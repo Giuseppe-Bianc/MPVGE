@@ -2,7 +2,7 @@
  * Created by gbian on 31/03/2025.
  * Copyright (c) 2025 All rights reserved.
  */
-
+// NOLINTBEGIN(*-include-cleaner)
 #pragma once
 
 #include "DeviceInfo.hpp"
@@ -28,6 +28,21 @@ namespace mpvge {
         [[nodiscard]] VkQueue getGraphicsQueue() const noexcept { return graphicsQueue; }
         [[nodiscard]] VkQueue getPresentQueue() const noexcept { return presentQueue; }
 
+        SwapChainSupportDetails getSwapChainSupport() { return surface.querySwapChainSupport(physicalDevice); }
+        uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags improperties);
+        QueueFamilyIndices findPhysicalQueueFamilies() { return surface.getQueueFamilyIndices(physicalDevice); }
+        VkFormat findSupportedFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
+
+        // Buffer Helper Functions
+        void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags improperties, VkBuffer &buffer,
+                          VkDeviceMemory &bufferMemory);
+        VkCommandBuffer beginSingleTimeCommands() noexcept;
+        void endSingleTimeCommands(VkCommandBuffer commandBuffer) noexcept;
+        void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size) noexcept;
+        void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height, uint32_t layerCount) noexcept;
+
+        void createImageWithInfo(const VkImageCreateInfo &imageInfo, VkMemoryPropertyFlags improperties, VkImage &image,
+                                 VkDeviceMemory &imageMemory);
     private:
         void pickPhysicalDevice();
         bool isDeviceSuitable(VkPhysicalDevice device);
@@ -47,3 +62,5 @@ namespace mpvge {
     };
 
 }  // namespace mpvge
+
+// NOLINTEND(*-include-cleaner)
