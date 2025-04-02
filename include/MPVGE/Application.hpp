@@ -31,8 +31,9 @@ namespace mpvge {
         Instance instance{wtile.data(), enableValidationLayers};
         Surface surface{instance, window};
         Device device{instance, surface, enableValidationLayers};
-        RenderPipeline pipeline{calculateRelativePathToShaders(curentP, "simple_shader.vert.opt.rmp.spv").string(),
-                                calculateRelativePathToShaders(curentP, "simple_shader.frag.opt.rmp.spv").string()};
+        RenderPipeline pipeline{device, calculateRelativePathToShaders(curentP, "simple_shader.vert.opt.rmp.spv").string(),
+                                calculateRelativePathToShaders(curentP, "simple_shader.frag.opt.rmp.spv").string(),
+                                RenderPipeline::defaultPipelineConfigInfo(wwidth, wheight)};
 
         /*Device device{window};
         //Pipeline pipeline{device, calculateRelativePathToShaders(curentP, "simple_shader.vert.opt.rmp.spv").string(),
