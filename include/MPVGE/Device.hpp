@@ -21,8 +21,12 @@ namespace mpvge {
         Device &operator=(const Device &) = delete;
         Device &operator=(Device &&) = delete;
 
-        [[nodiscard]] VkDevice get() { return device; }
-        [[nodiscard]] VkPhysicalDeviceProperties getProperties() const { return properties; }
+        [[nodiscard]] VkDevice getDevice() const noexcept { return device; }
+        [[nodiscard]] VkPhysicalDeviceProperties getProperties() const noexcept { return properties; }
+        [[nodiscard]] VkCommandPool getCommandPool() const noexcept { return commandPool; }
+        [[nodiscard]] VkSurfaceKHR getSurface() const noexcept { return surface.get(); }
+        [[nodiscard]] VkQueue getGraphicsQueue() const noexcept { return graphicsQueue; }
+        [[nodiscard]] VkQueue getPresentQueue() const noexcept { return presentQueue; }
 
     private:
         void pickPhysicalDevice();
@@ -35,6 +39,8 @@ namespace mpvge {
         VkDevice device = VK_NULL_HANDLE;
         VkCommandPool commandPool;
         VkPhysicalDeviceProperties properties;
+        VkQueue graphicsQueue;
+        VkQueue presentQueue;
         Surface &surface;
         Instance &instance;
         const std::vector<const char *> deviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
