@@ -43,13 +43,35 @@ namespace mpvge {
 
         void createImageWithInfo(const VkImageCreateInfo &imageInfo, VkMemoryPropertyFlags improperties, VkImage &image,
                                  VkDeviceMemory &imageMemory);
-
+        void cmdBeginLabel(VkCommandBuffer commandBuffer, const char *labelName, const std::vector<float> &color) noexcept;
+        void cmdInsertLabel(VkCommandBuffer commandBuffer, const char *labelName, const std::vector<float> &color) noexcept;
+        void cmdEndLabel(VkCommandBuffer commandBuffer) noexcept;
+        void queueBeginLabel(VkQueue queue, const char *labelName, const std::vector<float> &color) noexcept;
+        void queueInsertLabel(VkQueue queue, const char *labelName, const std::vector<float> &color) noexcept;
+        void queueEndLabel(VkQueue queue) noexcept;
+        void setObjectName(VkObjectType objectType, uint64_t objectHandle, const char *objectName) noexcept;
+        template <typename T>
+        void setObjectNames(VkObjectType objectType, const char *objectName, const std::vector<T> &objectHandles) noexcept {
+            for(auto [index, objectHandle] : objectHandles | std::views::enumerate) {
+                psetObjectName(instance.get(), device, objectType, BC_UI64T(objectHandle), FORMAT("{} {}", objectName, index).c_str());
+            }
+        }
     private:
         void pickPhysicalDevice();
         bool isDeviceSuitable(VkPhysicalDevice device);
         bool checkDeviceExtensionSupport(VkPhysicalDevice device);
         void createLogicalDevice(const QueueFamilyIndices &indices);
         void createCommandPool(const QueueFamilyIndices &queueFamilyIndices);
+        void pcmdBeginLabel(VkInstance instancein, VkCommandBuffer commandBuffer, const char *labelName,
+                            const std::vector<float> &color) noexcept;
+        void pcmdInsertLabel(VkInstance instancein, VkCommandBuffer commandBuffer, const char *labelName,
+                             const std::vector<float> &color) noexcept;
+        void pcmdEndLabel(VkInstance instancein, VkCommandBuffer commandBuffer) noexcept;
+        void pqueueBeginLabel(VkInstance instancein, VkQueue queue, const char *labelName, const std::vector<float> &color) noexcept;
+        void pqueueInsertLabel(VkInstance instancein, VkQueue queue, const char *labelName, const std::vector<float> &color) noexcept;
+        void pqueueEndLabel(VkInstance instancein, VkQueue queue) noexcept;
+        void psetObjectName(VkInstance instancein, VkDevice devicein, VkObjectType objectType, uint64_t objectHandle,
+                            const char *objectName) noexcept;
         bool enableValidationLayers;
         VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
         VkDevice device = VK_NULL_HANDLE;

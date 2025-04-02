@@ -7,6 +7,111 @@
 
 namespace mpvge {
     static inline constexpr float queuePriority = 1.0f;
+    // NOLINTBEGIN(*-make-member-function-const, *-pro-bounds-array-to-pointer-decay, *-no-array-decay)
+    // Wrapper per vkCmdBeginDebugUtilsLabelEXT
+    void Device::pcmdBeginLabel(VkInstance instancein, VkCommandBuffer commandBuffer, const char *labelName,
+                                const std::vector<float> &color) noexcept {
+        if(!enableValidationLayers) { return; }
+        auto func = std::bit_cast<PFN_vkCmdBeginDebugUtilsLabelEXT>(vkGetInstanceProcAddr(instancein, "vkCmdBeginDebugUtilsLabelEXT"));
+        if(func != nullptr) {
+            VkDebugUtilsLabelEXT label{};
+            label.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_LABEL_EXT;
+            label.pLabelName = labelName;
+            memcpy(label.color, color.data(), sizeof(float) * 4);
+            func(commandBuffer, &label);
+        }
+    }
+
+    // Wrapper per vkCmdInsertDebugUtilsLabelEXT
+    void Device::pcmdInsertLabel(VkInstance instancein, VkCommandBuffer commandBuffer, const char *labelName,
+                                 const std::vector<float> &color) noexcept {
+        if(!enableValidationLayers) { return; }
+        auto func = std::bit_cast<PFN_vkCmdInsertDebugUtilsLabelEXT>(vkGetInstanceProcAddr(instancein, "vkCmdInsertDebugUtilsLabelEXT"));
+        if(func != nullptr) {
+            VkDebugUtilsLabelEXT label{};
+            label.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_LABEL_EXT;
+            label.pLabelName = labelName;
+            memcpy(label.color, color.data(), sizeof(float) * 4);
+            func(commandBuffer, &label);
+        }
+    }
+
+    // Wrapper per vkCmdEndDebugUtilsLabelEXT
+    void Device::pcmdEndLabel(VkInstance instancein, VkCommandBuffer commandBuffer) noexcept {
+        if(!enableValidationLayers) { return; }
+        auto func = std::bit_cast<PFN_vkCmdEndDebugUtilsLabelEXT>(vkGetInstanceProcAddr(instancein, "vkCmdEndDebugUtilsLabelEXT"));
+        if(func != nullptr) { func(commandBuffer); }
+    }
+
+    // Wrapper per vkQueueBeginDebugUtilsLabelEXT
+    void Device::pqueueBeginLabel(VkInstance instancein, VkQueue queue, const char *labelName, const std::vector<float> &color) noexcept {
+        if(!enableValidationLayers) { return; }
+        auto func = std::bit_cast<PFN_vkQueueBeginDebugUtilsLabelEXT>(vkGetInstanceProcAddr(instancein, "vkQueueBeginDebugUtilsLabelEXT"));
+        if(func != nullptr) {
+            VkDebugUtilsLabelEXT label{};
+            label.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_LABEL_EXT;
+            label.pLabelName = labelName;
+            memcpy(label.color, color.data(), sizeof(float) * 4);
+            func(queue, &label);
+        }
+    }
+
+    // Wrapper per vkQueueInsertDebugUtilsLabelEXT
+    void Device::pqueueInsertLabel(VkInstance instancein, VkQueue queue, const char *labelName, const std::vector<float> &color) noexcept {
+        if(!enableValidationLayers) { return; }
+        auto func = std::bit_cast<PFN_vkQueueInsertDebugUtilsLabelEXT>(
+            vkGetInstanceProcAddr(instancein, "vkQueueInsertDebugUtilsLabelEXT"));
+        if(func != nullptr) {
+            VkDebugUtilsLabelEXT label{};
+            label.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_LABEL_EXT;
+            label.pLabelName = labelName;
+            memcpy(label.color, color.data(), sizeof(float) * 4);
+            func(queue, &label);
+        }
+    }
+
+    // Wrapper per vkQueueEndDebugUtilsLabelEXT
+    void Device::pqueueEndLabel(VkInstance instancein, VkQueue queue) noexcept {
+        if(!enableValidationLayers) { return; }
+        auto func = std::bit_cast<PFN_vkQueueEndDebugUtilsLabelEXT>(vkGetInstanceProcAddr(instancein, "vkQueueEndDebugUtilsLabelEXT"));
+        if(func != nullptr) { func(queue); }
+    }
+
+    // Wrapper per vkSetDebugUtilsObjectNameEXT
+    void Device::psetObjectName(VkInstance instancein, VkDevice devicein, VkObjectType objectType, uint64_t objectHandle,
+                                const char *objectName) noexcept {
+        if(!enableValidationLayers) { return; }
+        auto func = std::bit_cast<PFN_vkSetDebugUtilsObjectNameEXT>(vkGetInstanceProcAddr(instancein, "vkSetDebugUtilsObjectNameEXT"));
+        if(func != nullptr) {
+            VkDebugUtilsObjectNameInfoEXT nameInfo{};
+            nameInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT;
+            nameInfo.objectType = objectType;
+            nameInfo.objectHandle = objectHandle;
+            nameInfo.pObjectName = objectName;
+            func(devicein, &nameInfo);
+        }
+    }
+    // NOLINTEND(*-make-member-function-const, *-pro-bounds-array-to-pointer-decay, *-no-array-decay)
+
+    void Device::cmdBeginLabel(VkCommandBuffer commandBuffer, const char *labelName, const std::vector<float> &color) noexcept {
+        pcmdBeginLabel(instance.get(), commandBuffer, labelName, color);
+    }
+    void Device::cmdEndLabel(VkCommandBuffer commandBuffer) noexcept { pcmdEndLabel(instance.get(), commandBuffer); }
+    void Device::cmdInsertLabel(VkCommandBuffer commandBuffer, const char *labelName, const std::vector<float> &color) noexcept {
+        pcmdInsertLabel(instance.get(), commandBuffer, labelName, color);
+    }
+    void Device::queueBeginLabel(VkQueue queue, const char *labelName, const std::vector<float> &color) noexcept {
+        pqueueBeginLabel(instance.get(), queue, labelName, color);
+    }
+
+    void Device::queueEndLabel(VkQueue queue) noexcept { pqueueEndLabel(instance.get(), queue); }
+    void Device::queueInsertLabel(VkQueue queue, const char *labelName, const std::vector<float> &color) noexcept {
+        pqueueInsertLabel(instance.get(), queue, labelName, color);
+    }
+
+    void Device::setObjectName(VkObjectType objectType, uint64_t objectHandle, const char *objectName) noexcept {
+        psetObjectName(instance.get(), device, objectType, objectHandle, objectName);
+    }
 
     Device::Device(Instance &instancein, Surface &surfacein, bool enableValidationLayersin)
       : enableValidationLayers{enableValidationLayersin}, surface{surfacein}, instance{instancein} {
@@ -16,6 +121,13 @@ namespace mpvge {
         LINFO("Device created");
         createCommandPool(indices);
         LINFO("Command pool created");
+        psetObjectName(instance.get(), device, VK_OBJECT_TYPE_INSTANCE, BC_UI64T(instance.get()), "Instance");
+        psetObjectName(instance.get(), device, VK_OBJECT_TYPE_SURFACE_KHR, BC_UI64T(surface.get()), "Surface");
+        psetObjectName(instance.get(), device, VK_OBJECT_TYPE_DEVICE, BC_UI64T(device), "Logical Device");
+        psetObjectName(instance.get(), device, VK_OBJECT_TYPE_PHYSICAL_DEVICE, BC_UI64T(physicalDevice), "Physical Device");
+        psetObjectName(instance.get(), device, VK_OBJECT_TYPE_QUEUE, BC_UI64T(graphicsQueue), "Graphics Queue");
+        psetObjectName(instance.get(), device, VK_OBJECT_TYPE_QUEUE, BC_UI64T(presentQueue), "Present Queue");
+        psetObjectName(instance.get(), device, VK_OBJECT_TYPE_COMMAND_POOL, BC_UI64T(commandPool), "Command Pool");
     }
 
     Device::~Device() {
@@ -29,7 +141,7 @@ namespace mpvge {
         uint32_t deviceCount = 0;
         vkEnumeratePhysicalDevices(instance.get(), &deviceCount, nullptr);
         if(deviceCount == 0) { throw std::runtime_error("failed to find GPUs with Vulkan support!"); }
-
+        LINFO("Device count: {}", deviceCount);
         std::vector<VkPhysicalDevice> devices(deviceCount);
         vkEnumeratePhysicalDevices(instance.get(), &deviceCount, devices.data());
 
@@ -82,7 +194,7 @@ namespace mpvge {
         std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
         std::set<uint32_t> uniqueQueueFamilies = {indices.graphics_family(), indices.present_family()};
 
-        for(const uint32_t queueFamily : uniqueQueueFamilies) {
+        for(uint32_t queueFamily : uniqueQueueFamilies) {
             VkDeviceQueueCreateInfo queueCreateInfo = {};
             queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
             queueCreateInfo.queueFamilyIndex = queueFamily;
@@ -123,6 +235,9 @@ namespace mpvge {
 #endif
 
         VK_CHECK(vkCreateDevice(physicalDevice, &createInfo, nullptr, &device), "failed to create logical device!");
+
+        vkGetDeviceQueue(device, indices.graphics_family(), 0, &graphicsQueue);
+        vkGetDeviceQueue(device, indices.present_family(), 0, &presentQueue);
     }
 
     void Device::createCommandPool(const QueueFamilyIndices &queueFamilyIndices) {
@@ -143,6 +258,7 @@ namespace mpvge {
         bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
         VK_CHECK(vkCreateBuffer(device, &bufferInfo, nullptr, &buffer), "failed to create vertex buffer!");
+        psetObjectName(instance.get(), device, VK_OBJECT_TYPE_BUFFER, BC_UI64T(buffer), "Vertex Buffer");
 
         VkMemoryRequirements memRequirements;
         vkGetBufferMemoryRequirements(device, buffer, &memRequirements);
@@ -153,6 +269,7 @@ namespace mpvge {
         allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, improperties);
 
         VK_CHECK(vkAllocateMemory(device, &allocInfo, nullptr, &bufferMemory), "failed to allocate vertex buffer memory!");
+        psetObjectName(instance.get(), device, VK_OBJECT_TYPE_DEVICE_MEMORY, BC_UI64T(bufferMemory), "Vertex Buffer Memory");
 
         vkBindBufferMemory(device, buffer, bufferMemory, 0);
     }
@@ -165,20 +282,21 @@ namespace mpvge {
 
         VkCommandBuffer commandBuffer{};
         vkAllocateCommandBuffers(device, &allocInfo, &commandBuffer);
+        psetObjectName(instance.get(), device, VK_OBJECT_TYPE_COMMAND_BUFFER, BC_UI64T(commandBuffer), "Single Time Command Buffer");
 
         VkCommandBufferBeginInfo beginInfo{};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
         beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 
         vkBeginCommandBuffer(commandBuffer, &beginInfo);
-        // pcmdBeginLabel(instance, commandBuffer, "Begin Single Time Commands", {0.0f, 1.0f, 0.0f, 1.0f});
+        pcmdBeginLabel(instance.get(), commandBuffer, "Begin Single Time Commands", {0.0f, 1.0f, 0.0f, 1.0f});
 
         return commandBuffer;
     }
 
     void Device::endSingleTimeCommands(VkCommandBuffer commandBuffer) noexcept {
         // Chiude la label inserita
-        // pcmdEndLabel(instance, commandBuffer);
+        pcmdEndLabel(instance.get(), commandBuffer);
         vkEndCommandBuffer(commandBuffer);
 
         VkSubmitInfo submitInfo{};
@@ -186,10 +304,10 @@ namespace mpvge {
         submitInfo.commandBufferCount = 1;
         submitInfo.pCommandBuffers = &commandBuffer;
 
-        // pqueueBeginLabel(instance, graphicsQueue, "Submit Single Time Command", {1.0f, 1.0f, 1.0f, 1.0f});
+        pqueueBeginLabel(instance.get(), graphicsQueue, "Submit Single Time Command", {1.0f, 1.0f, 1.0f, 1.0f});
         vkQueueSubmit(graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
         vkQueueWaitIdle(graphicsQueue);
-        // pqueueEndLabel(instance, graphicsQueue);
+        pqueueEndLabel(instance.get(), graphicsQueue);
 
         vkFreeCommandBuffers(device, commandPool, 1, &commandBuffer);
     }
@@ -240,6 +358,8 @@ namespace mpvge {
 
         VK_CHECK(vkAllocateMemory(device, &allocInfo, nullptr, &imageMemory), "failed to allocate image memory!");
         VK_CHECK(vkBindImageMemory(device, image, imageMemory, 0), "failed to bind image memory!");
+        psetObjectName(instance.get(), device, VK_OBJECT_TYPE_IMAGE, BC_UI64T(image), "Image");
+        psetObjectName(instance.get(), device, VK_OBJECT_TYPE_DEVICE_MEMORY, BC_UI64T(imageMemory), "Image Memory");
     }
 
     uint32_t Device::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags improperties) {
@@ -254,7 +374,7 @@ namespace mpvge {
     }
 
     VkFormat Device::findSupportedFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling, VkFormatFeatureFlags features) {
-        for(const VkFormat format : candidates) {
+        for(VkFormat format : candidates) {
             VkFormatProperties props;
             vkGetPhysicalDeviceFormatProperties(physicalDevice, format, &props);
 

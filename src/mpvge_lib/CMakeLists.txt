@@ -20,6 +20,8 @@ add_library(mpvge_lib mpvge_lib.cpp
         ../../include/MPVGE/SwapChainSupportDetails.hpp
         RenderPipeline.cpp
         ../../include/MPVGE/RenderPipeline.hpp
+        ../../include/MPVGE/SwapChain.cpp
+        ../../include/MPVGE/SwapChain.hpp
 )
 
 get_target_property(target_name mpvge_lib NAME)

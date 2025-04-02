@@ -10,6 +10,7 @@
 #include "Instance.hpp"
 #include "RenderPipeline.hpp"
 #include "Surface.hpp"
+#include "SwapChain.hpp"
 #include "Window.hpp"
 
 namespace mpvge {
@@ -22,6 +23,10 @@ namespace mpvge {
         void run();
 
     private:
+        void createPipelineLayout();
+        void createPipeline();
+        void createCommandBuffers();
+        void drawFrame();
 #ifdef NDEBUG
         const bool enableValidationLayers = false;
 #else
@@ -31,15 +36,10 @@ namespace mpvge {
         Instance instance{wtile.data(), enableValidationLayers};
         Surface surface{instance, window};
         Device device{instance, surface, enableValidationLayers};
-        RenderPipeline pipeline{device, calculateRelativePathToShaders(curentP, "simple_shader.vert.opt.rmp.spv").string(),
-                                calculateRelativePathToShaders(curentP, "simple_shader.frag.opt.rmp.spv").string(),
-                                RenderPipeline::defaultPipelineConfigInfo(wwidth, wheight)};
-
-        /*Device device{window};
-        //Pipeline pipeline{device, calculateRelativePathToShaders(curentP, "simple_shader.vert.opt.rmp.spv").string(),
-        //                  calculateRelativePathToShaders(curentP, "simple_shader.frag.opt.rmp.spv").string(),
-        Pipeline::defaultPipelineConfigInfo(wwidth, wheight)}; SwapChain lveSwapChain{device, window.getExtent()}; std::unique_ptr<Pipeline>
-        pipeline; VkPipelineLayout pipelineLayout; std::vector<VkCommandBuffer> commandBuffers;*/
+        SwapChain lveSwapChain{device, window.getExtent()};
+        std::unique_ptr<RenderPipeline> lvePipeline;
+        VkPipelineLayout pipelineLayout;
+        std::vector<VkCommandBuffer> commandBuffers;
     };
 
 }  // namespace mpvge
