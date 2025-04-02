@@ -50,7 +50,7 @@ namespace mpvge {
         allocInfo.commandBufferCount = static_cast<uint32_t>(commandBuffers.size());
 
         VK_CHECK(vkAllocateCommandBuffers(device.getDevice(), &allocInfo, commandBuffers.data()), "failed to allocate command buffers!");
-        device.setObjectNames(VK_OBJECT_TYPE_COMMAND_BUFFER, "Command Buffers",commandBuffers);
+        device.setObjectNames(VK_OBJECT_TYPE_COMMAND_BUFFER, "Command Buffers", commandBuffers);
 
         for(int i = 0; i < commandBuffers.size(); i++) {
             VkCommandBufferBeginInfo beginInfo{};

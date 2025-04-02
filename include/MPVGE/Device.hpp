@@ -56,6 +56,7 @@ namespace mpvge {
                 psetObjectName(instance.get(), device, objectType, BC_UI64T(objectHandle), FORMAT("{} {}", objectName, index).c_str());
             }
         }
+
     private:
         void pickPhysicalDevice();
         bool isDeviceSuitable(VkPhysicalDevice device);
