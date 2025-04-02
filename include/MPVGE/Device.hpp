@@ -43,6 +43,7 @@ namespace mpvge {
 
         void createImageWithInfo(const VkImageCreateInfo &imageInfo, VkMemoryPropertyFlags improperties, VkImage &image,
                                  VkDeviceMemory &imageMemory);
+
     private:
         void pickPhysicalDevice();
         bool isDeviceSuitable(VkPhysicalDevice device);
