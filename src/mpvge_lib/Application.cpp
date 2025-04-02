@@ -6,7 +6,7 @@
 #include "MPVGE/Application.hpp"
 
 namespace mpvge {
-    Application::Application() { LINFO("Application constructor called"); }
+    Application::Application() {}
     Application::~Application() {}
 
     void Application::run() {
