@@ -24,7 +24,6 @@ namespace mpvge {
         [[nodiscard]] VkDevice get() { return device; }
         [[nodiscard]] VkPhysicalDeviceProperties getProperties() const { return properties; }
 
-
     private:
         void pickPhysicalDevice();
         bool isDeviceSuitable(VkPhysicalDevice device);
