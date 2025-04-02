@@ -9,13 +9,18 @@ namespace mpvge {
     static inline constexpr float queuePriority = 1.0f;
 
     Device::Device(Instance &instancein, Surface &surfacein, bool enableValidationLayersin)
-      : instance{instancein}, surface{surfacein}, enableValidationLayers{enableValidationLayersin} {
+      : enableValidationLayers{enableValidationLayersin}, surface{surfacein}, instance{instancein} {
         pickPhysicalDevice();
-        createLogicalDevice();
+        const QueueFamilyIndices indices = surface.getQueueFamilyIndices(physicalDevice);
+        createLogicalDevice(indices);
         LINFO("Device created");
+        createCommandPool(indices);
+        LINFO("Command pool created");
     }
 
     Device::~Device() {
+        DESTROY_VK_HANDLE(commandPool, vkDestroyCommandPool(device, commandPool, nullptr));
+        LINFO("Command pool destroyed");
         DESTROY_VK_HANDLE(physicalDevice, vkDestroyDevice(device, nullptr));
         LINFO("Device destroyed");
     }
@@ -73,9 +78,7 @@ namespace mpvge {
         return requiredExtensions.empty();
     }
 
-    void Device::createLogicalDevice() {
-        const QueueFamilyIndices indices = surface.getQueueFamilyIndices(physicalDevice);
-
+    void Device::createLogicalDevice(const QueueFamilyIndices &indices) {
         std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
         std::set<uint32_t> uniqueQueueFamilies = {indices.graphics_family(), indices.present_family()};
 
@@ -122,6 +125,14 @@ namespace mpvge {
         VK_CHECK(vkCreateDevice(physicalDevice, &createInfo, nullptr, &device), "failed to create logical device!");
     }
 
+    void Device::createCommandPool(const QueueFamilyIndices &queueFamilyIndices) {
+        VkCommandPoolCreateInfo poolInfo = {};
+        poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+        poolInfo.queueFamilyIndex = queueFamilyIndices.graphics_family();
+        poolInfo.flags = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT | VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+
+        VK_CHECK(vkCreateCommandPool(device, &poolInfo, nullptr, &commandPool), "failed to create command pool!");
+    }
 }  // namespace mpvge
 
 // NOLINTEND(*-include-cleaner)

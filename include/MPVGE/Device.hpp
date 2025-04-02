@@ -17,19 +17,24 @@ namespace mpvge {
         Device(Instance &instancein, Surface &surfacein, bool enableValidationLayersin);
         ~Device();
         Device(const Device &) = delete;
+        Device(Device &&) = delete;
         Device &operator=(const Device &) = delete;
+        Device &operator=(Device &&) = delete;
 
         [[nodiscard]] VkDevice get() { return device; }
         [[nodiscard]] VkPhysicalDeviceProperties getProperties() const { return properties; }
+
 
     private:
         void pickPhysicalDevice();
         bool isDeviceSuitable(VkPhysicalDevice device);
         bool checkDeviceExtensionSupport(VkPhysicalDevice device);
-        void createLogicalDevice();
+        void createLogicalDevice(const QueueFamilyIndices &indices);
+        void createCommandPool(const QueueFamilyIndices &queueFamilyIndices);
         bool enableValidationLayers;
         VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
         VkDevice device = VK_NULL_HANDLE;
+        VkCommandPool commandPool;
         VkPhysicalDeviceProperties properties;
         Surface &surface;
         Instance &instance;
