@@ -53,7 +53,7 @@ namespace mpvge {
         createShaderModule(vertCode, &vertShaderModule);
         createShaderModule(fragCode, &fragShaderModule);
 
-        VkPipelineShaderStageCreateInfo shaderStages[2];
+        std::array<VkPipelineShaderStageCreateInfo,2> shaderStages = {};
         shaderStages[0].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
         shaderStages[0].stage = VK_SHADER_STAGE_VERTEX_BIT;
         shaderStages[0].module = vertShaderModule;
@@ -86,7 +86,7 @@ namespace mpvge {
         VkGraphicsPipelineCreateInfo pipelineInfo{};
         pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
         pipelineInfo.stageCount = 2;
-        pipelineInfo.pStages = shaderStages;
+        pipelineInfo.pStages = shaderStages.data();
         pipelineInfo.pVertexInputState = &vertexInputInfo;
         pipelineInfo.pInputAssemblyState = &configInfo.inputAssemblyInfo;
         pipelineInfo.pViewportState = &viewportInfo;
@@ -111,7 +111,7 @@ namespace mpvge {
         VkShaderModuleCreateInfo createInfo{};
         createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
         createInfo.codeSize = code.size();
-        createInfo.pCode = reinterpret_cast<const uint32_t *>(code.data());
+        createInfo.pCode = std::bit_cast<const uint32_t *>(code.data());
 
         VK_CHECK(vkCreateShaderModule(device.getDevice(), &createInfo, nullptr, shaderModule), "failed to create shader module");
     }

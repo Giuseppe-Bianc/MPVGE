@@ -12,6 +12,7 @@ namespace mpvge {
     inline static constexpr auto presentModeImmediate = VK_PRESENT_MODE_IMMEDIATE_KHR;
     // NOLINTEND(*-diagnostic-unused-const-variable)
 
+    // NOLINTBEGIN(*-non-const-parameter, *-pro-bounds-array-to-pointer-decay,*-no-array-decay)
     SwapChain::SwapChain(Device &deviceRef, VkExtent2D extent) : device{deviceRef}, windowExtent{extent} {
         createSwapChain();
         createImageViews();
@@ -130,12 +131,12 @@ namespace mpvge {
         createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
         const QueueFamilyIndices indices = device.findPhysicalQueueFamilies();
-        uint32_t queueFamilyIndices[] = {indices.graphics_family(), indices.present_family()};
+        std::array<uint32_t,2> queueFamilyIndices = {indices.graphics_family(), indices.present_family()};
 
         if(indices.graphics_family() != indices.present_family()) {
             createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
             createInfo.queueFamilyIndexCount = 2;
-            createInfo.pQueueFamilyIndices = queueFamilyIndices;
+            createInfo.pQueueFamilyIndices = queueFamilyIndices.data();
         } else {
             createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
             createInfo.queueFamilyIndexCount = 0;      // Optional

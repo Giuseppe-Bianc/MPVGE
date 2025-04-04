@@ -1,3 +1,5 @@
+// NOLINTBEGIN(*-include-cleaner)
+
 #include <CLI/CLI.hpp>
 #include <MPVGE/mpvge_lib.hpp>
 #include <internal_use_only/config.hpp>
@@ -23,3 +25,5 @@ int main(int argc, const char **argv) {
         app_instance.run();
     } catch(const std::exception &e) { spdlog::error("Unhandled exception in main: {}", e.what()); }
 }
+
+// NOLINTEND(*-include-cleaner)
