@@ -2,10 +2,16 @@
  * Created by gbian on 02/04/2025.
  * Copyright (c) 2025 All rights reserved.
  */
-
+// NOLINTBEGIN(*-include-cleaner, *-signed-bitwise, *-qualified-auto, *-pro-type-member-init, *-member-init, *-avoid-c-arrays)
 #include "SwapChain.hpp"
 
 namespace mpvge {
+    DISABLE_WARNINGS_PUSH(26446 26432 26485)
+    // NOLINTBEGIN(*-diagnostic-unused-const-variable)
+    inline static constexpr auto presentModeMailBox = VK_PRESENT_MODE_MAILBOX_KHR;
+    inline static constexpr auto presentModeImmediate = VK_PRESENT_MODE_IMMEDIATE_KHR;
+    // NOLINTEND(*-diagnostic-unused-const-variable)
+
     SwapChain::SwapChain(Device &deviceRef, VkExtent2D extent) : device{deviceRef}, windowExtent{extent} {
         createSwapChain();
         createImageViews();
@@ -44,15 +50,16 @@ namespace mpvge {
     }
 
     VkResult SwapChain::acquireNextImage(uint32_t *imageIndex) {
-        vkWaitForFences(device.getDevice(), 1, &inFlightFences[currentFrame], VK_TRUE, std::numeric_limits<uint64_t>::max());
+        vkWaitForFences(device.getDevice(), 1, &inFlightFences[currentFrame], VK_TRUE, uint64Max);
 
-        VkResult result = vkAcquireNextImageKHR(device.getDevice(), swapChain, std::numeric_limits<uint64_t>::max(),
+        VkResult result = vkAcquireNextImageKHR(device.getDevice(), swapChain, uint64Max,
                                                 imageAvailableSemaphores[currentFrame],  // must be a not signaled semaphore
                                                 VK_NULL_HANDLE, imageIndex);
 
         return result;
     }
 
+    DISABLE_WARNINGS_PUSH(26429 26461)
     VkResult SwapChain::submitCommandBuffers(const VkCommandBuffer *buffers, uint32_t *imageIndex) {
         if(imagesInFlight[*imageIndex] != VK_NULL_HANDLE) {
             vkWaitForFences(device.getDevice(), 1, &imagesInFlight[*imageIndex], VK_TRUE, UINT64_MAX);
@@ -62,8 +69,8 @@ namespace mpvge {
         VkSubmitInfo submitInfo = {};
         submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
-        VkSemaphore waitSemaphores[] = {imageAvailableSemaphores[currentFrame]};
-        VkPipelineStageFlags waitStages[] = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
+        const VkSemaphore waitSemaphores[] = {imageAvailableSemaphores[currentFrame]};
+        const VkPipelineStageFlags waitStages[] = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
         submitInfo.waitSemaphoreCount = 1;
         submitInfo.pWaitSemaphores = waitSemaphores;
         submitInfo.pWaitDstStageMask = waitStages;
@@ -71,14 +78,13 @@ namespace mpvge {
         submitInfo.commandBufferCount = 1;
         submitInfo.pCommandBuffers = buffers;
 
-        VkSemaphore signalSemaphores[] = {renderFinishedSemaphores[currentFrame]};
+        const VkSemaphore signalSemaphores[] = {renderFinishedSemaphores[currentFrame]};
         submitInfo.signalSemaphoreCount = 1;
         submitInfo.pSignalSemaphores = signalSemaphores;
 
         vkResetFences(device.getDevice(), 1, &inFlightFences[currentFrame]);
-        if(vkQueueSubmit(device.getGraphicsQueue(), 1, &submitInfo, inFlightFences[currentFrame]) != VK_SUCCESS) {
-            throw std::runtime_error("failed to submit draw command buffer!");
-        }
+        VK_CHECK(vkQueueSubmit(device.getGraphicsQueue(), 1, &submitInfo, inFlightFences[currentFrame]),
+                 "failed to submit draw command buffer!");
 
         VkPresentInfoKHR presentInfo = {};
         presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
@@ -86,25 +92,25 @@ namespace mpvge {
         presentInfo.waitSemaphoreCount = 1;
         presentInfo.pWaitSemaphores = signalSemaphores;
 
-        VkSwapchainKHR swapChains[] = {swapChain};
+        const VkSwapchainKHR swapChains[] = {swapChain};
         presentInfo.swapchainCount = 1;
         presentInfo.pSwapchains = swapChains;
-
         presentInfo.pImageIndices = imageIndex;
 
-        auto result = vkQueuePresentKHR(device.getPresentQueue(), &presentInfo);
+        const auto result = vkQueuePresentKHR(device.getPresentQueue(), &presentInfo);
 
         currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 
         return result;
     }
+    // NOLINTEND(*-non-const-parameter, *-pro-bounds-array-to-pointer-decay,*-no-array-decay)
+    DISABLE_WARNINGS_POP()
 
     void SwapChain::createSwapChain() {
-        SwapChainSupportDetails swapChainSupport = device.getSwapChainSupport();
-
-        VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
-        VkPresentModeKHR presentMode = chooseSwapPresentMode(swapChainSupport.presentModes);
-        VkExtent2D extent = chooseSwapExtent(swapChainSupport.capabilities);
+        const SwapChainSupportDetails swapChainSupport = device.getSwapChainSupport();
+        const VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
+        const VkPresentModeKHR presentMode = chooseSwapPresentMode(swapChainSupport.presentModes);
+        const VkExtent2D extent = chooseSwapExtent(swapChainSupport.capabilities);
 
         uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
         if(swapChainSupport.capabilities.maxImageCount > 0 && imageCount > swapChainSupport.capabilities.maxImageCount) {
@@ -122,7 +128,7 @@ namespace mpvge {
         createInfo.imageArrayLayers = 1;
         createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
-        QueueFamilyIndices indices = device.findPhysicalQueueFamilies();
+        const QueueFamilyIndices indices = device.findPhysicalQueueFamilies();
         uint32_t queueFamilyIndices[] = {indices.graphics_family(), indices.present_family()};
 
         if(indices.graphics_family() != indices.present_family()) {
@@ -153,6 +159,7 @@ namespace mpvge {
         vkGetSwapchainImagesKHR(device.getDevice(), swapChain, &imageCount, nullptr);
         swapChainImages.resize(imageCount);
         vkGetSwapchainImagesKHR(device.getDevice(), swapChain, &imageCount, swapChainImages.data());
+        device.setObjectNames(VK_OBJECT_TYPE_IMAGE, "SwapChain Image", swapChainImages);
 
         swapChainImageFormat = surfaceFormat.format;
         swapChainExtent = extent;
@@ -166,12 +173,13 @@ namespace mpvge {
             viewInfo.image = swapChainImages[i];
             viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
             viewInfo.format = swapChainImageFormat;
+            viewInfo.components = {VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY,
+                                   VK_COMPONENT_SWIZZLE_IDENTITY};
             viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
             viewInfo.subresourceRange.baseMipLevel = 0;
             viewInfo.subresourceRange.levelCount = 1;
             viewInfo.subresourceRange.baseArrayLayer = 0;
             viewInfo.subresourceRange.layerCount = 1;
-
             VK_CHECK(vkCreateImageView(device.getDevice(), &viewInfo, nullptr, &swapChainImageViews[i]),
                      "failed to create texture image view!");
         }
@@ -198,8 +206,8 @@ namespace mpvge {
         colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
         colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
         colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-        colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
         colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+        colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
         colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
         colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
@@ -225,7 +233,7 @@ namespace mpvge {
         std::array<VkAttachmentDescription, 2> attachments = {colorAttachment, depthAttachment};
         VkRenderPassCreateInfo renderPassInfo = {};
         renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-        renderPassInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
+        renderPassInfo.attachmentCount = C_UI32T(attachments.size());
         renderPassInfo.pAttachments = attachments.data();
         renderPassInfo.subpassCount = 1;
         renderPassInfo.pSubpasses = &subpass;
@@ -240,19 +248,16 @@ namespace mpvge {
         swapChainFramebuffers.resize(imageCount());
         for(size_t i = 0; i < imageCount(); i++) {
             std::array<VkImageView, 2> attachments = {swapChainImageViews[i], depthImageViews[i]};
-
-            VkExtent2D swapChainExtentint = getSwapChainExtent();
+            auto [width, height] = getSwapChainExtent();
             VkFramebufferCreateInfo framebufferInfo = {};
             framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
             framebufferInfo.renderPass = renderPass;
-            framebufferInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
+            framebufferInfo.attachmentCount = C_UI32T(attachments.size());
             framebufferInfo.pAttachments = attachments.data();
-            framebufferInfo.width = swapChainExtentint.width;
-            framebufferInfo.height = swapChainExtentint.height;
+            framebufferInfo.width = width;
+            framebufferInfo.height = height;
             framebufferInfo.layers = 1;
-
-            VK_CHECK(vkCreateFramebuffer(device.getDevice(), &framebufferInfo, nullptr, &swapChainFramebuffers[i]),
-                     "failed to create framebuffer!");
+            VK_CHECK(vkCreateFramebuffer(device.getDevice(), &framebufferInfo, nullptr, &swapChainFramebuffers[i]), "failed to create framebuffer!");
         }
         device.setObjectNames(VK_OBJECT_TYPE_FRAMEBUFFER, "Swap Chain Framebuffer", swapChainFramebuffers);
     }
@@ -261,11 +266,12 @@ namespace mpvge {
         VkFormat depthFormat = findDepthFormat();
         VkExtent2D swapChainExtentint = getSwapChainExtent();
 
-        depthImages.resize(imageCount());
-        depthImageMemorys.resize(imageCount());
-        depthImageViews.resize(imageCount());
+        const size_t count = imageCount();
+        depthImages.resize(count);
+        depthImageMemorys.resize(count);
+        depthImageViews.resize(count);
 
-        for(int i = 0; i < depthImages.size(); i++) {
+        for(size_t i = 0; i < count; i++) {
             VkImageCreateInfo imageInfo{};
             imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
             imageInfo.imageType = VK_IMAGE_TYPE_2D;
@@ -294,10 +300,11 @@ namespace mpvge {
             viewInfo.subresourceRange.levelCount = 1;
             viewInfo.subresourceRange.baseArrayLayer = 0;
             viewInfo.subresourceRange.layerCount = 1;
-
-            VK_CHECK(vkCreateImageView(device.getDevice(), &viewInfo, nullptr, &depthImageViews[i]),
-                     "failed to create texture image view!");
+            VK_CHECK(vkCreateImageView(device.getDevice(), &viewInfo, nullptr, &depthImageViews[i]), "failed to create texture image view!");
         }
+        device.setObjectNames(VK_OBJECT_TYPE_IMAGE, "Depth Image", depthImages);
+        device.setObjectNames(VK_OBJECT_TYPE_IMAGE_VIEW, "Depth Image View", depthImageViews);
+        device.setObjectNames(VK_OBJECT_TYPE_DEVICE_MEMORY, "Depth Image Memory", depthImageMemorys);
     }
 
     void SwapChain::createSyncObjects() {
@@ -313,46 +320,44 @@ namespace mpvge {
         fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
         fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
+        const auto dev = device.getDevice();
         for(size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-            if(vkCreateSemaphore(device.getDevice(), &semaphoreInfo, nullptr, &imageAvailableSemaphores[i]) != VK_SUCCESS ||
-               vkCreateSemaphore(device.getDevice(), &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]) != VK_SUCCESS ||
-               vkCreateFence(device.getDevice(), &fenceInfo, nullptr, &inFlightFences[i]) != VK_SUCCESS) {
-                throw std::runtime_error("failed to create synchronization objects for a frame!");
-            }
+            VK_CHECK_SYNC_OBJECTS(vkCreateSemaphore(dev, &semaphoreInfo, nullptr, &imageAvailableSemaphores[i]),
+                                  vkCreateSemaphore(dev, &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]),
+                                  vkCreateFence(dev, &fenceInfo, nullptr, &inFlightFences[i]),
+                                  "failed to create synchronization objects for a frame!");
         }
+        device.setObjectNames(VK_OBJECT_TYPE_SEMAPHORE, "Image Available Semaphore", imageAvailableSemaphores);
+        device.setObjectNames(VK_OBJECT_TYPE_SEMAPHORE, "Render Finished Semaphore", renderFinishedSemaphores);
+        device.setObjectNames(VK_OBJECT_TYPE_FENCE, "In Flight Fence", inFlightFences);
     }
 
     VkSurfaceFormatKHR SwapChain::chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &availableFormats) {
-        for(const auto &availableFormat : availableFormats) {
-            if(availableFormat.format == VK_FORMAT_B8G8R8A8_UNORM && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
-                return availableFormat;
-            }
-        }
+        auto isDesiredFormat = [](const VkSurfaceFormatKHR &format) {
+            return format.format == VK_FORMAT_B8G8R8A8_SRGB && format.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
+        };
+
+        if(auto it = std::ranges::find_if(availableFormats, isDesiredFormat); it != availableFormats.end()) { return *it; }
 
         return availableFormats[0];
     }
 
     VkPresentModeKHR SwapChain::chooseSwapPresentMode(const std::vector<VkPresentModeKHR> &availablePresentModes) {
-        for(const auto &availablePresentMode : availablePresentModes) {
-            if(availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
-                LINFO("Present mode: Mailbox");
-                return availablePresentMode;
-            }
-        }
-
-        // for (const auto &availablePresentMode : availablePresentModes) {
-        //   if (availablePresentMode == VK_PRESENT_MODE_IMMEDIATE_KHR) {
-        //     LINFO("Present mode: Immediate");
-        //     return availablePresentMode;
-        //   }
+        // if(std::ranges::find(availablePresentModes, presentModeMailBox) != availablePresentModes.end()) {
+        //     VLINFO("Present mode: Mailbox");
+        //     return presentModeMailBox;
         // }
 
-        LINFO("Present mode: V-Sync");
+        if(std::ranges::find(availablePresentModes, presentModeImmediate) != availablePresentModes.end()) {
+            VLINFO("Present mode: Immediate");
+            return presentModeImmediate;
+        }
+        VLINFO("Present mode: V-Sync");
         return VK_PRESENT_MODE_FIFO_KHR;
     }
 
     VkExtent2D SwapChain::chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities) {
-        if(capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max()) {
+        if(capabilities.currentExtent.width != ui32tmax) {
             return capabilities.currentExtent;
         } else {
             VkExtent2D actualExtent = windowExtent;
@@ -367,5 +372,7 @@ namespace mpvge {
         return device.findSupportedFormat({VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT},
                                           VK_IMAGE_TILING_OPTIMAL, VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
     }
-
+    DISABLE_WARNINGS_POP()
 }  // namespace mpvge
+
+// NOLINTEND(*-include-cleaner, *-signed-bitwise, *-qualified-auto, *-pro-type-member-init, *-member-init, *-avoid-c-arrays)
