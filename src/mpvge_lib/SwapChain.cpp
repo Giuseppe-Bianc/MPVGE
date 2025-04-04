@@ -3,7 +3,7 @@
  * Copyright (c) 2025 All rights reserved.
  */
 // NOLINTBEGIN(*-include-cleaner, *-signed-bitwise, *-qualified-auto, *-pro-type-member-init, *-member-init, *-avoid-c-arrays)
-#include "SwapChain.hpp"
+#include "MPVGE/SwapChain.hpp"
 
 namespace mpvge {
     DISABLE_WARNINGS_PUSH(26446 26432 26485)
