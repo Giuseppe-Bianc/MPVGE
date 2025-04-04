@@ -257,7 +257,8 @@ namespace mpvge {
             framebufferInfo.width = width;
             framebufferInfo.height = height;
             framebufferInfo.layers = 1;
-            VK_CHECK(vkCreateFramebuffer(device.getDevice(), &framebufferInfo, nullptr, &swapChainFramebuffers[i]), "failed to create framebuffer!");
+            VK_CHECK(vkCreateFramebuffer(device.getDevice(), &framebufferInfo, nullptr, &swapChainFramebuffers[i]),
+                     "failed to create framebuffer!");
         }
         device.setObjectNames(VK_OBJECT_TYPE_FRAMEBUFFER, "Swap Chain Framebuffer", swapChainFramebuffers);
     }
@@ -300,7 +301,8 @@ namespace mpvge {
             viewInfo.subresourceRange.levelCount = 1;
             viewInfo.subresourceRange.baseArrayLayer = 0;
             viewInfo.subresourceRange.layerCount = 1;
-            VK_CHECK(vkCreateImageView(device.getDevice(), &viewInfo, nullptr, &depthImageViews[i]), "failed to create texture image view!");
+            VK_CHECK(vkCreateImageView(device.getDevice(), &viewInfo, nullptr, &depthImageViews[i]),
+                     "failed to create texture image view!");
         }
         device.setObjectNames(VK_OBJECT_TYPE_IMAGE, "Depth Image", depthImages);
         device.setObjectNames(VK_OBJECT_TYPE_IMAGE_VIEW, "Depth Image View", depthImageViews);
