@@ -131,7 +131,7 @@ namespace mpvge {
         createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
         const QueueFamilyIndices indices = device.findPhysicalQueueFamilies();
-        std::array<uint32_t,2> queueFamilyIndices = {indices.graphics_family(), indices.present_family()};
+        std::array<uint32_t, 2> queueFamilyIndices = {indices.graphics_family(), indices.present_family()};
 
         if(indices.graphics_family() != indices.present_family()) {
             createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;

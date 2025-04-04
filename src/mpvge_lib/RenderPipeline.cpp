@@ -53,7 +53,7 @@ namespace mpvge {
         createShaderModule(vertCode, &vertShaderModule);
         createShaderModule(fragCode, &fragShaderModule);
 
-        std::array<VkPipelineShaderStageCreateInfo,2> shaderStages = {};
+        std::array<VkPipelineShaderStageCreateInfo, 2> shaderStages = {};
         shaderStages[0].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
         shaderStages[0].stage = VK_SHADER_STAGE_VERTEX_BIT;
         shaderStages[0].module = vertShaderModule;
