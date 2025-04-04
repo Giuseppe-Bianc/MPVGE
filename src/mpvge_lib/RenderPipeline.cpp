@@ -17,7 +17,7 @@ namespace mpvge {
 
     RenderPipeline::~RenderPipeline() {
         auto deviceHandle = device.getDevice();
-         DESTROY_VK_HANDLE(vertShaderModule, vkDestroyShaderModule(deviceHandle, vertShaderModule, nullptr));
+        DESTROY_VK_HANDLE(vertShaderModule, vkDestroyShaderModule(deviceHandle, vertShaderModule, nullptr));
         LINFO("Vertex Shader Module destroyed");
         DESTROY_VK_HANDLE(fragShaderModule, vkDestroyShaderModule(deviceHandle, fragShaderModule, nullptr));
         LINFO("Fragment Shader Module destroyed");
@@ -192,6 +192,6 @@ namespace mpvge {
     }
 
 }  // namespace mpvge
-// clang-format off
+   // clang-format off
 // NOLINTEND(*-include-cleaner, *-signed-bitwise, *-easily-swappable-parameters, *-use-anonymous-namespace, *-diagnostic-old-style-cast, *-pro-type-cstyle-cast, *-pro-type-member-init,*-member-init, *-pro-bounds-constant-array-index, *-qualified-auto, *-uppercase-literal-suffix)
-// clang-format on
+   // clang-format on

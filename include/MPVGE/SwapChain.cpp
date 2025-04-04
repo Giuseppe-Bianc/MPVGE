@@ -23,9 +23,7 @@ namespace mpvge {
 
     SwapChain::~SwapChain() {
         auto deviceHandle = device.getDevice();
-        for(auto imageView : swapChainImageViews) {
-            DESTROY_VK_HANDLE(imageView, vkDestroyImageView(deviceHandle, imageView, nullptr));
-        }
+        for(auto imageView : swapChainImageViews) { DESTROY_VK_HANDLE(imageView, vkDestroyImageView(deviceHandle, imageView, nullptr)); }
         swapChainImageViews.clear();
 
         DESTROY_VK_HANDLE(swapChain, vkDestroySwapchainKHR(deviceHandle, swapChain, nullptr));
@@ -109,7 +107,7 @@ namespace mpvge {
     DISABLE_WARNINGS_POP()
 
     void SwapChain::createSwapChain() {
-        auto deviceHandle = device.getDevice(); 
+        auto deviceHandle = device.getDevice();
         const SwapChainSupportDetails swapChainSupport = device.getSwapChainSupport();
         const VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
         const VkPresentModeKHR presentMode = chooseSwapPresentMode(swapChainSupport.presentModes);

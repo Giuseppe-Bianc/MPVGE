@@ -32,7 +32,7 @@ namespace mpvge {
     }
 
     bool Instance::checkValidationLayerSupport() {
-        uint32_t layerCount =0;
+        uint32_t layerCount = 0;
         vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
 
         std::vector<VkLayerProperties> availableLayers(layerCount);
@@ -122,7 +122,7 @@ namespace mpvge {
     }
 
     void Instance::setupDebugMessenger() {
-        if(!enableValidationLayers) {return;}
+        if(!enableValidationLayers) { return; }
 
         VkDebugUtilsMessengerCreateInfoEXT createInfo{};
         createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;

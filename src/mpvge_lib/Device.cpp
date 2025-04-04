@@ -93,7 +93,7 @@ namespace mpvge {
             func(devicein, &nameInfo);
         }
     }
-    
+
     void Device::cmdBeginLabel(VkCommandBuffer commandBuffer, const char *labelName, const std::vector<float> &color) noexcept {
         pcmdBeginLabel(instance.get(), commandBuffer, labelName, color);
     }
@@ -397,4 +397,3 @@ namespace mpvge {
 // clang-format off
 // NOLINTEND(*-include-cleaner, *-signed-bitwise, *-easily-swappable-parameters, *-use-anonymous-namespace, *-diagnostic-old-style-cast, *-pro-type-cstyle-cast, *-pro-type-member-init,*-member-init, *-pro-bounds-constant-array-index, *-qualified-auto, *-uppercase-literal-suffix)
 // clang-format on
-
