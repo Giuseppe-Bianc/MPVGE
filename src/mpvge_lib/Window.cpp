@@ -3,7 +3,6 @@
  * Copyright (c) 2025 All rights reserved.
  */
 // NOLINTBEGIN(*-include-cleaner, *-easily-swappable-parameters, *-multiway-paths-covered, *-init-variables, *-qualified-auto)
-#include <MPVGE/VulkanCheck.hpp>
 #include <MPVGE/Window.hpp>
 
 namespace mpvge {

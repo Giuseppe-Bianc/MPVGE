@@ -2,7 +2,9 @@
  * Created by gbian on 02/04/2025.
  * Copyright (c) 2025 All rights reserved.
  */
-// NOLINTBEGIN(*-include-cleaner)
+// clang-format off
+// NOLINTBEGIN(*-include-cleaner, *-signed-bitwise, *-easily-swappable-parameters, *-use-anonymous-namespace, *-diagnostic-old-style-cast, *-pro-type-cstyle-cast, *-pro-type-member-init,*-member-init, *-pro-bounds-constant-array-index, *-qualified-auto, *-uppercase-literal-suffix)
+// clang-format on
 #include "MPVGE/RenderPipeline.hpp"
 
 namespace mpvge {
@@ -14,11 +16,12 @@ namespace mpvge {
     }
 
     RenderPipeline::~RenderPipeline() {
-        DESTROY_VK_HANDLE(vertShaderModule, vkDestroyShaderModule(device.getDevice(), vertShaderModule, nullptr));
+        auto deviceHandle = device.getDevice();
+         DESTROY_VK_HANDLE(vertShaderModule, vkDestroyShaderModule(deviceHandle, vertShaderModule, nullptr));
         LINFO("Vertex Shader Module destroyed");
-        DESTROY_VK_HANDLE(fragShaderModule, vkDestroyShaderModule(device.getDevice(), fragShaderModule, nullptr));
+        DESTROY_VK_HANDLE(fragShaderModule, vkDestroyShaderModule(deviceHandle, fragShaderModule, nullptr));
         LINFO("Fragment Shader Module destroyed");
-        DESTROY_VK_HANDLE(graphicsPipeline, vkDestroyPipeline(device.getDevice(), graphicsPipeline, nullptr));
+        DESTROY_VK_HANDLE(graphicsPipeline, vkDestroyPipeline(deviceHandle, graphicsPipeline, nullptr));
         LINFO("Graphics Pipeline destroyed");
     }
 
@@ -31,7 +34,7 @@ namespace mpvge {
         std::vector<char> buffer(fileSize);
 
         file.seekg(0);
-        file.read(buffer.data(), fileSize);
+        file.read(buffer.data(), NC_LI(fileSize));
 
         file.close();
         return buffer;
@@ -44,8 +47,8 @@ namespace mpvge {
 
         auto vertCode = readFile(vertFilepath);
         auto fragCode = readFile(fragFilepath);
-        LINFO("Vertex Shader Code Size: {}", vertCode.size());
-        LINFO("Fragment Shader Code Size: {}", fragCode.size());
+        /*LINFO("Vertex Shader Code Size: {}", vertCode.size());
+        LINFO("Fragment Shader Code Size: {}", fragCode.size());*/
 
         createShaderModule(vertCode, &vertShaderModule);
         createShaderModule(fragCode, &fragShaderModule);
@@ -189,5 +192,6 @@ namespace mpvge {
     }
 
 }  // namespace mpvge
-
-// NOLINTEND(*-include-cleaner)
+// clang-format off
+// NOLINTEND(*-include-cleaner, *-signed-bitwise, *-easily-swappable-parameters, *-use-anonymous-namespace, *-diagnostic-old-style-cast, *-pro-type-cstyle-cast, *-pro-type-member-init,*-member-init, *-pro-bounds-constant-array-index, *-qualified-auto, *-uppercase-literal-suffix)
+// clang-format on

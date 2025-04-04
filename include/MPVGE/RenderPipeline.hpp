@@ -49,7 +49,6 @@ namespace mpvge {
         VkPipeline graphicsPipeline;
         VkShaderModule vertShaderModule;
         VkShaderModule fragShaderModule;
-        ;
     };
 
 }  // namespace mpvge

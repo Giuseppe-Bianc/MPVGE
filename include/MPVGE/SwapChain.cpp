@@ -22,30 +22,31 @@ namespace mpvge {
     }
 
     SwapChain::~SwapChain() {
+        auto deviceHandle = device.getDevice();
         for(auto imageView : swapChainImageViews) {
-            DESTROY_VK_HANDLE(imageView, vkDestroyImageView(device.getDevice(), imageView, nullptr));
+            DESTROY_VK_HANDLE(imageView, vkDestroyImageView(deviceHandle, imageView, nullptr));
         }
         swapChainImageViews.clear();
 
-        DESTROY_VK_HANDLE(swapChain, vkDestroySwapchainKHR(device.getDevice(), swapChain, nullptr));
+        DESTROY_VK_HANDLE(swapChain, vkDestroySwapchainKHR(deviceHandle, swapChain, nullptr));
 
-        for(int i = 0; i < depthImages.size(); i++) {
-            DESTROY_VK_HANDLE(depthImageViews[i], vkDestroyImageView(device.getDevice(), depthImageViews[i], nullptr));
-            DESTROY_VK_HANDLE(depthImages[i], vkDestroyImage(device.getDevice(), depthImages[i], nullptr));
-            DESTROY_VK_HANDLE(depthImageMemorys[i], vkFreeMemory(device.getDevice(), depthImageMemorys[i], nullptr));
+        for(size_t i = 0; i < depthImages.size(); i++) {
+            DESTROY_VK_HANDLE(depthImageViews[i], vkDestroyImageView(deviceHandle, depthImageViews[i], nullptr));
+            DESTROY_VK_HANDLE(depthImages[i], vkDestroyImage(deviceHandle, depthImages[i], nullptr));
+            DESTROY_VK_HANDLE(depthImageMemorys[i], vkFreeMemory(deviceHandle, depthImageMemorys[i], nullptr));
         }
 
         for(auto framebuffer : swapChainFramebuffers) {
-            DESTROY_VK_HANDLE(framebuffer, vkDestroyFramebuffer(device.getDevice(), framebuffer, nullptr));
+            DESTROY_VK_HANDLE(framebuffer, vkDestroyFramebuffer(deviceHandle, framebuffer, nullptr));
         }
 
-        DESTROY_VK_HANDLE(renderPass, vkDestroyRenderPass(device.getDevice(), renderPass, nullptr));
+        DESTROY_VK_HANDLE(renderPass, vkDestroyRenderPass(deviceHandle, renderPass, nullptr));
 
         // cleanup synchronization objects
         for(size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-            DESTROY_VK_HANDLE(renderFinishedSemaphores[i], vkDestroySemaphore(device.getDevice(), renderFinishedSemaphores[i], nullptr));
-            DESTROY_VK_HANDLE(imageAvailableSemaphores[i], vkDestroySemaphore(device.getDevice(), imageAvailableSemaphores[i], nullptr));
-            DESTROY_VK_HANDLE(inFlightFences[i], vkDestroyFence(device.getDevice(), inFlightFences[i], nullptr));
+            DESTROY_VK_HANDLE(renderFinishedSemaphores[i], vkDestroySemaphore(deviceHandle, renderFinishedSemaphores[i], nullptr));
+            DESTROY_VK_HANDLE(imageAvailableSemaphores[i], vkDestroySemaphore(deviceHandle, imageAvailableSemaphores[i], nullptr));
+            DESTROY_VK_HANDLE(inFlightFences[i], vkDestroyFence(deviceHandle, inFlightFences[i], nullptr));
         }
     }
 
@@ -61,8 +62,9 @@ namespace mpvge {
 
     DISABLE_WARNINGS_PUSH(26429 26461)
     VkResult SwapChain::submitCommandBuffers(const VkCommandBuffer *buffers, uint32_t *imageIndex) {
+        auto deviceHandle = device.getDevice();
         if(imagesInFlight[*imageIndex] != VK_NULL_HANDLE) {
-            vkWaitForFences(device.getDevice(), 1, &imagesInFlight[*imageIndex], VK_TRUE, UINT64_MAX);
+            vkWaitForFences(deviceHandle, 1, &imagesInFlight[*imageIndex], VK_TRUE, UINT64_MAX);
         }
         imagesInFlight[*imageIndex] = inFlightFences[currentFrame];
 
@@ -82,7 +84,7 @@ namespace mpvge {
         submitInfo.signalSemaphoreCount = 1;
         submitInfo.pSignalSemaphores = signalSemaphores;
 
-        vkResetFences(device.getDevice(), 1, &inFlightFences[currentFrame]);
+        vkResetFences(deviceHandle, 1, &inFlightFences[currentFrame]);
         VK_CHECK(vkQueueSubmit(device.getGraphicsQueue(), 1, &submitInfo, inFlightFences[currentFrame]),
                  "failed to submit draw command buffer!");
 
@@ -107,6 +109,7 @@ namespace mpvge {
     DISABLE_WARNINGS_POP()
 
     void SwapChain::createSwapChain() {
+        auto deviceHandle = device.getDevice(); 
         const SwapChainSupportDetails swapChainSupport = device.getSwapChainSupport();
         const VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
         const VkPresentModeKHR presentMode = chooseSwapPresentMode(swapChainSupport.presentModes);
@@ -149,16 +152,16 @@ namespace mpvge {
 
         createInfo.oldSwapchain = VK_NULL_HANDLE;
 
-        VK_CHECK(vkCreateSwapchainKHR(device.getDevice(), &createInfo, nullptr, &swapChain), "failed to create swap chain!");
+        VK_CHECK(vkCreateSwapchainKHR(deviceHandle, &createInfo, nullptr, &swapChain), "failed to create swap chain!");
         device.setObjectName(VK_OBJECT_TYPE_SWAPCHAIN_KHR, BC_UI64T(swapChain), "Swap Chain");
 
         // we only specified a minimum number of images in the swap chain, so the implementation is
         // allowed to create a swap chain with more. That's why we'll first query the final number of
         // images with vkGetSwapchainImagesKHR, then resize the container and finally call it again to
         // retrieve the handles.
-        vkGetSwapchainImagesKHR(device.getDevice(), swapChain, &imageCount, nullptr);
+        vkGetSwapchainImagesKHR(deviceHandle, swapChain, &imageCount, nullptr);
         swapChainImages.resize(imageCount);
-        vkGetSwapchainImagesKHR(device.getDevice(), swapChain, &imageCount, swapChainImages.data());
+        vkGetSwapchainImagesKHR(deviceHandle, swapChain, &imageCount, swapChainImages.data());
         device.setObjectNames(VK_OBJECT_TYPE_IMAGE, "SwapChain Image", swapChainImages);
 
         swapChainImageFormat = surfaceFormat.format;
@@ -363,8 +366,8 @@ namespace mpvge {
             return capabilities.currentExtent;
         } else {
             VkExtent2D actualExtent = windowExtent;
-            actualExtent.width = std::clamp(capabilities.minImageExtent.width, capabilities.maxImageExtent.width, actualExtent.width);
-            actualExtent.height = std::clamp(capabilities.minImageExtent.height, capabilities.maxImageExtent.height, actualExtent.height);
+            actualExtent.width = std::clamp(actualExtent.width, capabilities.minImageExtent.width, capabilities.maxImageExtent.width);
+            actualExtent.height = std::clamp(actualExtent.height, capabilities.minImageExtent.height, capabilities.maxImageExtent.height);
 
             return actualExtent;
         }

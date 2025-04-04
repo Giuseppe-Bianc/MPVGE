@@ -2,7 +2,9 @@
  * Created by gbian on 31/03/2025.
  * Copyright (c) 2025 All rights reserved.
  */
-// NOLINTBEGIN(*-include-cleaner)
+// clang-format off
+// NOLINTBEGIN(*-include-cleaner, *-signed-bitwise, *-easily-swappable-parameters, *-use-anonymous-namespace, *-diagnostic-old-style-cast, *-pro-type-cstyle-cast, *-pro-type-member-init,*-member-init, *-pro-bounds-constant-array-index, *-qualified-auto, *-uppercase-literal-suffix)
+// clang-format on
 #include "MPVGE/Device.hpp"
 
 namespace mpvge {
@@ -91,8 +93,7 @@ namespace mpvge {
             func(devicein, &nameInfo);
         }
     }
-    // NOLINTEND(*-make-member-function-const, *-pro-bounds-array-to-pointer-decay, *-no-array-decay)
-
+    
     void Device::cmdBeginLabel(VkCommandBuffer commandBuffer, const char *labelName, const std::vector<float> &color) noexcept {
         pcmdBeginLabel(instance.get(), commandBuffer, labelName, color);
     }
@@ -112,6 +113,7 @@ namespace mpvge {
     void Device::setObjectName(VkObjectType objectType, uint64_t objectHandle, const char *objectName) noexcept {
         psetObjectName(instance.get(), device, objectType, objectHandle, objectName);
     }
+    // NOLINTEND(*-make-member-function-const, *-pro-bounds-array-to-pointer-decay, *-no-array-decay)
 
     Device::Device(Instance &instancein, Surface &surfacein, bool enableValidationLayersin)
       : enableValidationLayers{enableValidationLayersin}, surface{surfacein}, instance{instancein} {
@@ -149,7 +151,7 @@ namespace mpvge {
         for(const auto &[index, pdevice] : devices | std::views::enumerate) {
             if(isDeviceSuitable(pdevice)) {
                 physicalDevice = pdevice;
-                deviceIndex = index;
+                deviceIndex = C_ST(index);
                 break;
             }
         }
@@ -392,4 +394,7 @@ namespace mpvge {
     }
 }  // namespace mpvge
 
-// NOLINTEND(*-include-cleaner)
+// clang-format off
+// NOLINTEND(*-include-cleaner, *-signed-bitwise, *-easily-swappable-parameters, *-use-anonymous-namespace, *-diagnostic-old-style-cast, *-pro-type-cstyle-cast, *-pro-type-member-init,*-member-init, *-pro-bounds-constant-array-index, *-qualified-auto, *-uppercase-literal-suffix)
+// clang-format on
+

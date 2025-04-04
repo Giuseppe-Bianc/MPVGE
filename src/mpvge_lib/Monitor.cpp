@@ -37,7 +37,7 @@ namespace mpvge {
     }
     std::vector<Monitor> Monitor::enumerateMonitors() {
         std::vector<Monitor> monitorList;
-        int count;
+        int count = 0;
         GLFWmonitor *primaryMonitor = glfwGetPrimaryMonitor();
         if(!primaryMonitor) { throw std::runtime_error("Failed to get the primary monitor."); }
         monitorList.emplace_back(primaryMonitor, true);

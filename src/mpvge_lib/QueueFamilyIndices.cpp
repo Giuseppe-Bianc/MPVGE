@@ -2,7 +2,7 @@
  * Created by gbian on 31/03/2025.
  * Copyright (c) 2025 All rights reserved.
  */
-
+// NOLINTBEGIN(*-include-cleaner)
 #include "MPVGE/QueueFamilyIndices.hpp"
 
 namespace mpvge {
@@ -26,3 +26,5 @@ namespace mpvge {
 
     bool QueueFamilyIndices::is_complete() const noexcept { return has_graphics_family() && has_present_family(); }
 }  // namespace mpvge
+
+// NOLINTEND(*-include-cleaner)

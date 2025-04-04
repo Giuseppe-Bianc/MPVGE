@@ -2,7 +2,9 @@
  * Created by gbian on 31/03/2025.
  * Copyright (c) 2025 All rights reserved.
  */
-// // NOLINTBEGIN(*-include-cleaner)
+// clang-format off
+// NOLINTBEGIN(*-include-cleaner, *-signed-bitwise, *-easily-swappable-parameters, *-use-anonymous-namespace, *-diagnostic-old-style-cast, *-pro-type-cstyle-cast, *-pro-type-member-init,*-member-init, *-pro-bounds-constant-array-index, *-qualified-auto, *-uppercase-literal-suffix)
+// clang-format on
 #include "MPVGE/Instance.hpp"
 
 #include "MPVGE/VulkanLogInfoCallback.hpp"
@@ -30,7 +32,7 @@ namespace mpvge {
     }
 
     bool Instance::checkValidationLayerSupport() {
-        uint32_t layerCount;
+        uint32_t layerCount =0;
         vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
 
         std::vector<VkLayerProperties> availableLayers(layerCount);
@@ -110,7 +112,7 @@ namespace mpvge {
         hasGflwRequiredInstanceExtensions(extensions);
     }
 
-    std::vector<const char *> Instance::getRequiredExtensions() {
+    std::vector<const char *> Instance::getRequiredExtensions() const {
         uint32_t glfwExtensionCount = 0;
         const char **glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 
@@ -120,7 +122,7 @@ namespace mpvge {
     }
 
     void Instance::setupDebugMessenger() {
-        if(!enableValidationLayers) return;
+        if(!enableValidationLayers) {return;}
 
         VkDebugUtilsMessengerCreateInfoEXT createInfo{};
         createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
@@ -149,7 +151,7 @@ namespace mpvge {
         if(func != nullptr) { func(instance, debugMessenger, pAllocator); }
     }
 
-    void Instance::hasGflwRequiredInstanceExtensions(const std::vector<const char *> &requiredExtensions) {
+    void Instance::hasGflwRequiredInstanceExtensions(const std::vector<const char *> &requiredExtensions) const {
 #ifdef INDEPTH
         vnd::AutoTimer t{"hasGflwRequiredInstanceExtensions", vnd::Timer::Big};
 #endif
@@ -184,4 +186,6 @@ namespace mpvge {
     }
 }  // namespace mpvge
 
-// NOLINTEND(*-include-cleaner)
+// clang-format off
+// NOLINTEND(*-include-cleaner, *-signed-bitwise, *-easily-swappable-parameters, *-use-anonymous-namespace, *-diagnostic-old-style-cast, *-pro-type-cstyle-cast, *-pro-type-member-init,*-member-init, *-pro-bounds-constant-array-index, *-qualified-auto, *-uppercase-literal-suffix)
+// clang-format on

@@ -21,13 +21,13 @@ namespace mpvge {
 
     private:
         void createInstance(const char *app_name);
-        std::vector<const char *> getRequiredExtensions();
+        std::vector<const char *> getRequiredExtensions() const;
         static VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT *pCreateInfo,
                                                      const VkAllocationCallbacks *pAllocator, VkDebugUtilsMessengerEXT *pDebugMessenger);
         static void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger,
                                                   const VkAllocationCallbacks *pAllocator);
         void setupDebugMessenger();
-        void hasGflwRequiredInstanceExtensions(const std::vector<const char *> &requiredExtensions);
+        void hasGflwRequiredInstanceExtensions(const std::vector<const char *> &requiredExtensions) const;
         VkInstance instance{VK_NULL_HANDLE};
         bool enableValidationLayers;
         VkDebugUtilsMessengerEXT debugMessenger{VK_NULL_HANDLE};

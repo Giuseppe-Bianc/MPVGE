@@ -7,6 +7,7 @@
 
 #include "Monitor.hpp"
 #include "WindowCallback.hpp"
+#include "vulkanCheck.hpp"
 #include "headers.hpp"
 
 namespace mpvge {
