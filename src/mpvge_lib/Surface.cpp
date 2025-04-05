@@ -6,9 +6,7 @@
 #include "MPVGE/Surface.hpp"
 
 namespace mpvge {
-    Surface::Surface(Instance &instancein, Window &window) : instance{instancein} {
-        window.createWindowSurface(instance.get(), &surface);
-    }
+    Surface::Surface(Instance &instancein, Window &window) : instance{instancein} { window.createWindowSurface(instance.get(), &surface); }
     Surface::~Surface() {
         DESTROY_VK_HANDLE(surface, vkDestroySurfaceKHR(instance.get(), surface, nullptr));
         LINFO("Surface destroyed");
