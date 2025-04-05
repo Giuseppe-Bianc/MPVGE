@@ -57,7 +57,6 @@ namespace mpvge {
     Instance::Instance(const char *appName, bool enableValidationLayersin) : enableValidationLayers(enableValidationLayersin) {
         createInstance(appName);
         setupDebugMessenger();
-        LINFO("Instance created");
     }
 
     Instance::~Instance() {

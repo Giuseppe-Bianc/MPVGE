@@ -52,8 +52,9 @@ namespace mpvge {
         void setObjectName(VkObjectType objectType, uint64_t objectHandle, const char *objectName) noexcept;
         template <typename T>
         void setObjectNames(VkObjectType objectType, const char *objectName, const std::vector<T> &objectHandles) noexcept {
+            auto instanceHandle = instance.get();
             for(auto [index, objectHandle] : objectHandles | std::views::enumerate) {
-                psetObjectName(instance.get(), device, objectType, BC_UI64T(objectHandle), FORMAT("{} {}", objectName, index).c_str());
+                psetObjectName(instanceHandle, device, objectType, BC_UI64T(objectHandle), FORMAT("{} {}", objectName, index).c_str());
             }
         }
 

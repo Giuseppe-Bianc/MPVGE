@@ -120,16 +120,15 @@ namespace mpvge {
         pickPhysicalDevice();
         const QueueFamilyIndices indices = surface.getQueueFamilyIndices(physicalDevice);
         createLogicalDevice(indices);
-        LINFO("Device created");
         createCommandPool(indices);
-        LINFO("Command pool created");
-        psetObjectName(instance.get(), device, VK_OBJECT_TYPE_INSTANCE, BC_UI64T(instance.get()), "Instance");
-        psetObjectName(instance.get(), device, VK_OBJECT_TYPE_SURFACE_KHR, BC_UI64T(surface.get()), "Surface");
-        psetObjectName(instance.get(), device, VK_OBJECT_TYPE_DEVICE, BC_UI64T(device), "Logical Device");
-        psetObjectName(instance.get(), device, VK_OBJECT_TYPE_PHYSICAL_DEVICE, BC_UI64T(physicalDevice), "Physical Device");
-        psetObjectName(instance.get(), device, VK_OBJECT_TYPE_QUEUE, BC_UI64T(graphicsQueue), "Graphics Queue");
-        psetObjectName(instance.get(), device, VK_OBJECT_TYPE_QUEUE, BC_UI64T(presentQueue), "Present Queue");
-        psetObjectName(instance.get(), device, VK_OBJECT_TYPE_COMMAND_POOL, BC_UI64T(commandPool), "Command Pool");
+        auto instanceHandle = instance.get();
+        psetObjectName(instanceHandle, device, VK_OBJECT_TYPE_INSTANCE, BC_UI64T(instanceHandle), "Instance");
+        psetObjectName(instanceHandle, device, VK_OBJECT_TYPE_SURFACE_KHR, BC_UI64T(surface.get()), "Surface");
+        psetObjectName(instanceHandle, device, VK_OBJECT_TYPE_DEVICE, BC_UI64T(device), "Logical Device");
+        psetObjectName(instanceHandle, device, VK_OBJECT_TYPE_PHYSICAL_DEVICE, BC_UI64T(physicalDevice), "Physical Device");
+        psetObjectName(instanceHandle, device, VK_OBJECT_TYPE_QUEUE, BC_UI64T(graphicsQueue), "Graphics Queue");
+        psetObjectName(instanceHandle, device, VK_OBJECT_TYPE_QUEUE, BC_UI64T(presentQueue), "Present Queue");
+        psetObjectName(instanceHandle, device, VK_OBJECT_TYPE_COMMAND_POOL, BC_UI64T(commandPool), "Command Pool");
     }
 
     Device::~Device() {

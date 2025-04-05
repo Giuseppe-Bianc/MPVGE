@@ -8,7 +8,6 @@
 namespace mpvge {
     Surface::Surface(Instance &instancein, Window &window) : instance{instancein} {
         window.createWindowSurface(instance.get(), &surface);
-        LINFO("Surface created");
     }
     Surface::~Surface() {
         DESTROY_VK_HANDLE(surface, vkDestroySurfaceKHR(instance.get(), surface, nullptr));

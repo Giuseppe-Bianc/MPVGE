@@ -14,7 +14,6 @@ namespace mpvge {
     Application::~Application() { DESTROY_VK_HANDLE(pipelineLayout, vkDestroyPipelineLayout(device.getDevice(), pipelineLayout, nullptr)); }
 
     void Application::run() {
-        LINFO("Application run called");
         while(!window.shouldClose()) {
             glfwPollEvents();
             drawFrame();
@@ -31,6 +30,7 @@ namespace mpvge {
         pipelineLayoutInfo.pPushConstantRanges = nullptr;
         VK_CHECK(vkCreatePipelineLayout(device.getDevice(), &pipelineLayoutInfo, nullptr, &pipelineLayout),
                  "failed to create pipeline layout!");
+        device.setObjectName(VK_OBJECT_TYPE_PIPELINE_LAYOUT, BC_UI64T(pipelineLayout), "Pipeline Layout");
     }
     void Application::createPipeline() {
         auto pipelineConfig = RenderPipeline::defaultPipelineConfigInfo(lveSwapChain.width(), lveSwapChain.height());

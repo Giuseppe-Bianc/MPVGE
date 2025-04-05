@@ -247,8 +247,10 @@ namespace mpvge {
     }
 
     void SwapChain::createFramebuffers() {
-        swapChainFramebuffers.resize(imageCount());
-        for(size_t i = 0; i < imageCount(); i++) {
+        auto deviceHandle = device.getDevice();
+        auto image_count = imageCount();
+        swapChainFramebuffers.resize(image_count);
+        for(size_t i = 0; i < image_count; i++) {
             std::array<VkImageView, 2> attachments = {swapChainImageViews[i], depthImageViews[i]};
             auto [width, height] = getSwapChainExtent();
             VkFramebufferCreateInfo framebufferInfo = {};
@@ -259,7 +261,7 @@ namespace mpvge {
             framebufferInfo.width = width;
             framebufferInfo.height = height;
             framebufferInfo.layers = 1;
-            VK_CHECK(vkCreateFramebuffer(device.getDevice(), &framebufferInfo, nullptr, &swapChainFramebuffers[i]),
+            VK_CHECK(vkCreateFramebuffer(deviceHandle, &framebufferInfo, nullptr, &swapChainFramebuffers[i]),
                      "failed to create framebuffer!");
         }
         device.setObjectNames(VK_OBJECT_TYPE_FRAMEBUFFER, "Swap Chain Framebuffer", swapChainFramebuffers);
