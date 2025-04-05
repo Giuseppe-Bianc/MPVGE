@@ -140,11 +140,12 @@ namespace mpvge {
 
     void Device::pickPhysicalDevice() {
         uint32_t deviceCount = 0;
-        vkEnumeratePhysicalDevices(instance.get(), &deviceCount, nullptr);
+        auto instanceHandle = instance.get();
+        vkEnumeratePhysicalDevices(instanceHandle, &deviceCount, nullptr);
         if(deviceCount == 0) { throw std::runtime_error("failed to find GPUs with Vulkan support!"); }
         LINFO("Device count: {}", deviceCount);
         std::vector<VkPhysicalDevice> devices(deviceCount);
-        vkEnumeratePhysicalDevices(instance.get(), &deviceCount, devices.data());
+        vkEnumeratePhysicalDevices(instanceHandle, &deviceCount, devices.data());
 
         std::size_t deviceIndex = 0;
         for(const auto &[index, pdevice] : devices | std::views::enumerate) {
@@ -201,7 +202,7 @@ namespace mpvge {
             queueCreateInfo.queueFamilyIndex = queueFamily;
             queueCreateInfo.queueCount = 1;
             queueCreateInfo.pQueuePriorities = &queuePriority;
-            queueCreateInfos.push_back(queueCreateInfo);
+            queueCreateInfos.emplace_back(queueCreateInfo);
         }
 
         VkPhysicalDeviceFeatures deviceFeatures = {};
@@ -252,6 +253,7 @@ namespace mpvge {
 
     void Device::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags improperties, VkBuffer &buffer,
                               VkDeviceMemory &bufferMemory) {
+        auto instanceHandle = instance.get();
         VkBufferCreateInfo bufferInfo{};
         bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
         bufferInfo.size = size;
@@ -259,7 +261,7 @@ namespace mpvge {
         bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
         VK_CHECK(vkCreateBuffer(device, &bufferInfo, nullptr, &buffer), "failed to create vertex buffer!");
-        psetObjectName(instance.get(), device, VK_OBJECT_TYPE_BUFFER, BC_UI64T(buffer), "Vertex Buffer");
+        psetObjectName(instanceHandle, device, VK_OBJECT_TYPE_BUFFER, BC_UI64T(buffer), "Vertex Buffer");
 
         VkMemoryRequirements memRequirements;
         vkGetBufferMemoryRequirements(device, buffer, &memRequirements);
@@ -270,11 +272,12 @@ namespace mpvge {
         allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, improperties);
 
         VK_CHECK(vkAllocateMemory(device, &allocInfo, nullptr, &bufferMemory), "failed to allocate vertex buffer memory!");
-        psetObjectName(instance.get(), device, VK_OBJECT_TYPE_DEVICE_MEMORY, BC_UI64T(bufferMemory), "Vertex Buffer Memory");
+        psetObjectName(instanceHandle, device, VK_OBJECT_TYPE_DEVICE_MEMORY, BC_UI64T(bufferMemory), "Vertex Buffer Memory");
 
         vkBindBufferMemory(device, buffer, bufferMemory, 0);
     }
     VkCommandBuffer Device::beginSingleTimeCommands() noexcept {
+        auto instanceHandle = instance.get();
         VkCommandBufferAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
         allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
@@ -283,21 +286,22 @@ namespace mpvge {
 
         VkCommandBuffer commandBuffer{};
         vkAllocateCommandBuffers(device, &allocInfo, &commandBuffer);
-        psetObjectName(instance.get(), device, VK_OBJECT_TYPE_COMMAND_BUFFER, BC_UI64T(commandBuffer), "Single Time Command Buffer");
+        psetObjectName(instanceHandle, device, VK_OBJECT_TYPE_COMMAND_BUFFER, BC_UI64T(commandBuffer), "Single Time Command Buffer");
 
         VkCommandBufferBeginInfo beginInfo{};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
         beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 
         vkBeginCommandBuffer(commandBuffer, &beginInfo);
-        pcmdBeginLabel(instance.get(), commandBuffer, "Begin Single Time Commands", {0.0f, 1.0f, 0.0f, 1.0f});
+        pcmdBeginLabel(instanceHandle, commandBuffer, "Begin Single Time Commands", {0.0f, 1.0f, 0.0f, 1.0f});
 
         return commandBuffer;
     }
 
     void Device::endSingleTimeCommands(VkCommandBuffer commandBuffer) noexcept {
+        auto instanceHandle = instance.get();
         // Chiude la label inserita
-        pcmdEndLabel(instance.get(), commandBuffer);
+        pcmdEndLabel(instanceHandle, commandBuffer);
         vkEndCommandBuffer(commandBuffer);
 
         VkSubmitInfo submitInfo{};
@@ -305,10 +309,10 @@ namespace mpvge {
         submitInfo.commandBufferCount = 1;
         submitInfo.pCommandBuffers = &commandBuffer;
 
-        pqueueBeginLabel(instance.get(), graphicsQueue, "Submit Single Time Command", {1.0f, 1.0f, 1.0f, 1.0f});
+        pqueueBeginLabel(instanceHandle, graphicsQueue, "Submit Single Time Command", {1.0f, 1.0f, 1.0f, 1.0f});
         vkQueueSubmit(graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
         vkQueueWaitIdle(graphicsQueue);
-        pqueueEndLabel(instance.get(), graphicsQueue);
+        pqueueEndLabel(instanceHandle, graphicsQueue);
 
         vkFreeCommandBuffers(device, commandPool, 1, &commandBuffer);
     }
@@ -375,7 +379,7 @@ namespace mpvge {
     }
 
     VkFormat Device::findSupportedFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling, VkFormatFeatureFlags features) {
-        for(VkFormat format : candidates) {
+        for(const VkFormat &format : candidates) {
             VkFormatProperties props;
             vkGetPhysicalDeviceFormatProperties(physicalDevice, format, &props);
 
