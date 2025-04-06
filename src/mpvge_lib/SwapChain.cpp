@@ -152,7 +152,7 @@ namespace mpvge {
         createInfo.oldSwapchain = VK_NULL_HANDLE;
 
         VK_CHECK(vkCreateSwapchainKHR(deviceHandle, &createInfo, nullptr, &swapChain), "failed to create swap chain!");
-        device.setObjectName(VK_OBJECT_TYPE_SWAPCHAIN_KHR, BC_UI64T(swapChain), "Swap Chain");
+        device.setObjectName(swapChain, "Swap Chain");
 
         // we only specified a minimum number of images in the swap chain, so the implementation is
         // allowed to create a swap chain with more. That's why we'll first query the final number of
@@ -161,7 +161,7 @@ namespace mpvge {
         vkGetSwapchainImagesKHR(deviceHandle, swapChain, &imageCount, nullptr);
         swapChainImages.resize(imageCount);
         vkGetSwapchainImagesKHR(deviceHandle, swapChain, &imageCount, swapChainImages.data());
-        device.setObjectNames(VK_OBJECT_TYPE_IMAGE, "SwapChain Image", swapChainImages);
+        device.setObjectNames("SwapChain Image", swapChainImages);
 
         swapChainImageFormat = surfaceFormat.format;
         swapChainExtent = extent;
@@ -185,7 +185,7 @@ namespace mpvge {
             VK_CHECK(vkCreateImageView(device.getDevice(), &viewInfo, nullptr, &swapChainImageViews[i]),
                      "failed to create texture image view!");
         }
-        device.setObjectNames(VK_OBJECT_TYPE_IMAGE_VIEW, "Swap Chain Image View", swapChainImageViews);
+        device.setObjectNames("Swap Chain Image View", swapChainImageViews);
     }
 
     void SwapChain::createRenderPass() {
@@ -243,7 +243,7 @@ namespace mpvge {
         renderPassInfo.pDependencies = &dependency;
 
         VK_CHECK(vkCreateRenderPass(device.getDevice(), &renderPassInfo, nullptr, &renderPass), "failed to create render pass!");
-        device.setObjectName(VK_OBJECT_TYPE_RENDER_PASS, BC_UI64T(renderPass), "Render Pass");
+        device.setObjectName(renderPass, "Render Pass");
     }
 
     void SwapChain::createFramebuffers() {
@@ -264,7 +264,7 @@ namespace mpvge {
             VK_CHECK(vkCreateFramebuffer(deviceHandle, &framebufferInfo, nullptr, &swapChainFramebuffers[i]),
                      "failed to create framebuffer!");
         }
-        device.setObjectNames(VK_OBJECT_TYPE_FRAMEBUFFER, "Swap Chain Framebuffer", swapChainFramebuffers);
+        device.setObjectNames("Swap Chain Framebuffer", swapChainFramebuffers);
     }
 
     void SwapChain::createDepthResources() {
@@ -308,9 +308,9 @@ namespace mpvge {
             VK_CHECK(vkCreateImageView(device.getDevice(), &viewInfo, nullptr, &depthImageViews[i]),
                      "failed to create texture image view!");
         }
-        device.setObjectNames(VK_OBJECT_TYPE_IMAGE, "Depth Image", depthImages);
-        device.setObjectNames(VK_OBJECT_TYPE_IMAGE_VIEW, "Depth Image View", depthImageViews);
-        device.setObjectNames(VK_OBJECT_TYPE_DEVICE_MEMORY, "Depth Image Memory", depthImageMemorys);
+        device.setObjectNames("Depth Image", depthImages);
+        device.setObjectNames( "Depth Image View", depthImageViews);
+        device.setObjectNames("Depth Image Memory", depthImageMemorys);
     }
 
     void SwapChain::createSyncObjects() {
@@ -333,9 +333,9 @@ namespace mpvge {
                                   vkCreateFence(dev, &fenceInfo, nullptr, &inFlightFences[i]),
                                   "failed to create synchronization objects for a frame!");
         }
-        device.setObjectNames(VK_OBJECT_TYPE_SEMAPHORE, "Image Available Semaphore", imageAvailableSemaphores);
-        device.setObjectNames(VK_OBJECT_TYPE_SEMAPHORE, "Render Finished Semaphore", renderFinishedSemaphores);
-        device.setObjectNames(VK_OBJECT_TYPE_FENCE, "In Flight Fence", inFlightFences);
+        device.setObjectNames( "Image Available Semaphore", imageAvailableSemaphores);
+        device.setObjectNames( "Render Finished Semaphore", renderFinishedSemaphores);
+        device.setObjectNames("In Flight Fence", inFlightFences);
     }
 
     VkSurfaceFormatKHR SwapChain::chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &availableFormats) {

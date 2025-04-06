@@ -49,10 +49,14 @@ namespace mpvge {
         void queueBeginLabel(VkQueue queue, const char *labelName, const std::vector<float> &color) noexcept;
         void queueInsertLabel(VkQueue queue, const char *labelName, const std::vector<float> &color) noexcept;
         void queueEndLabel(VkQueue queue) noexcept;
-        void setObjectName(VkObjectType objectType, uint64_t objectHandle, const char *objectName) noexcept;
+        template <typename T> void setObjectName(T objectHandle, const char *objectName) noexcept {
+            auto objectType = GetVulkanObjectType<T>(objectHandle);
+            psetObjectName(instance.get(), device, objectType, BC_UI64T(objectHandle), objectName);
+        }
         template <typename T>
-        void setObjectNames(VkObjectType objectType, const char *objectName, const std::vector<T> &objectHandles) noexcept {
+        void setObjectNames(const char *objectName, const std::vector<T> &objectHandles) noexcept {
             auto instanceHandle = instance.get();
+            auto objectType = GetVulkanObjectType<T>(objectHandles.front());
             for(auto [index, objectHandle] : objectHandles | std::views::enumerate) {
                 psetObjectName(instanceHandle, device, objectType, BC_UI64T(objectHandle), FORMAT("{} {}", objectName, index).c_str());
             }

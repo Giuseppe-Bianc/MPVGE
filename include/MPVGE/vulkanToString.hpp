@@ -6,6 +6,7 @@
 #pragma once
 
 #include "headers.hpp"
+#include "VulkanObjectType.hpp"
 
 [[nodiscard]] static inline const char *VkDebugUtilsMessageTypeFlagBitsEXTString(VkDebugUtilsMessageTypeFlagBitsEXT messageType) noexcept {
     switch(messageType) {

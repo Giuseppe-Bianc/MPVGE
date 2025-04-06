@@ -109,10 +109,6 @@ namespace mpvge {
     void Device::queueInsertLabel(VkQueue queue, const char *labelName, const std::vector<float> &color) noexcept {
         pqueueInsertLabel(instance.get(), queue, labelName, color);
     }
-
-    void Device::setObjectName(VkObjectType objectType, uint64_t objectHandle, const char *objectName) noexcept {
-        psetObjectName(instance.get(), device, objectType, objectHandle, objectName);
-    }
     // NOLINTEND(*-make-member-function-const, *-pro-bounds-array-to-pointer-decay, *-no-array-decay)
 
     Device::Device(Instance &instancein, Surface &surfacein, bool enableValidationLayersin)
