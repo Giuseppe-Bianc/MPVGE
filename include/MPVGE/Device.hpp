@@ -53,8 +53,7 @@ namespace mpvge {
             auto objectType = GetVulkanObjectType<T>(objectHandle);
             psetObjectName(instance.get(), device, objectType, BC_UI64T(objectHandle), objectName);
         }
-        template <typename T>
-        void setObjectNames(const char *objectName, const std::vector<T> &objectHandles) noexcept {
+        template <typename T> void setObjectNames(const char *objectName, const std::vector<T> &objectHandles) noexcept {
             auto instanceHandle = instance.get();
             auto objectType = GetVulkanObjectType<T>(objectHandles.front());
             for(auto [index, objectHandle] : objectHandles | std::views::enumerate) {

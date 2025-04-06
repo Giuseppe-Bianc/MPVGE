@@ -309,7 +309,7 @@ namespace mpvge {
                      "failed to create texture image view!");
         }
         device.setObjectNames("Depth Image", depthImages);
-        device.setObjectNames( "Depth Image View", depthImageViews);
+        device.setObjectNames("Depth Image View", depthImageViews);
         device.setObjectNames("Depth Image Memory", depthImageMemorys);
     }
 
@@ -333,8 +333,8 @@ namespace mpvge {
                                   vkCreateFence(dev, &fenceInfo, nullptr, &inFlightFences[i]),
                                   "failed to create synchronization objects for a frame!");
         }
-        device.setObjectNames( "Image Available Semaphore", imageAvailableSemaphores);
-        device.setObjectNames( "Render Finished Semaphore", renderFinishedSemaphores);
+        device.setObjectNames("Image Available Semaphore", imageAvailableSemaphores);
+        device.setObjectNames("Render Finished Semaphore", renderFinishedSemaphores);
         device.setObjectNames("In Flight Fence", inFlightFences);
     }
 

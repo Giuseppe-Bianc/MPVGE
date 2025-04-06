@@ -5,8 +5,8 @@
 // NOLINTBEGIN(*-include-cleaner)
 #pragma once
 
-#include "headers.hpp"
 #include "VulkanObjectType.hpp"
+#include "headers.hpp"
 
 [[nodiscard]] static inline const char *VkDebugUtilsMessageTypeFlagBitsEXTString(VkDebugUtilsMessageTypeFlagBitsEXT messageType) noexcept {
     switch(messageType) {
