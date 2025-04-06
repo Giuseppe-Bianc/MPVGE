@@ -62,10 +62,8 @@ namespace mpvge {
     Instance::~Instance() {
         if(enableValidationLayers) {
             DESTROY_VK_HANDLE(debugMessenger, DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr));
-            LINFO("Debug messenger destroyed");
         }
         DESTROY_VK_HANDLE(instance, vkDestroyInstance(instance, nullptr));
-        LINFO("Instance destroyed");
     }
     void Instance::createInstance(const char *app_name) {
         if(enableValidationLayers && !checkValidationLayerSupport()) {

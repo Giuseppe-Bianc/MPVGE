@@ -14,7 +14,6 @@ namespace mpvge {
     Window::~Window() {
         glfwDestroyWindow(window);
         glfwTerminate();
-        LINFO("Window destroyed");
     }
     DISABLE_WARNINGS_POP()
 

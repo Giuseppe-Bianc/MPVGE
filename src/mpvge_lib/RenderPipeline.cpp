@@ -18,25 +18,29 @@ namespace mpvge {
     RenderPipeline::~RenderPipeline() {
         auto deviceHandle = device.getDevice();
         DESTROY_VK_HANDLE(vertShaderModule, vkDestroyShaderModule(deviceHandle, vertShaderModule, nullptr));
-        LINFO("Vertex Shader Module destroyed");
         DESTROY_VK_HANDLE(fragShaderModule, vkDestroyShaderModule(deviceHandle, fragShaderModule, nullptr));
-        LINFO("Fragment Shader Module destroyed");
         DESTROY_VK_HANDLE(graphicsPipeline, vkDestroyPipeline(deviceHandle, graphicsPipeline, nullptr));
-        LINFO("Graphics Pipeline destroyed");
     }
 
     std::vector<char> RenderPipeline::readFile(const std::string &filepath) {
-        std::ifstream file{filepath, std::ios::ate | std::ios::binary};
+        vnd::AutoTimer timer{std::format("Read File {}", filepath)};
 
-        if(!file.is_open()) { throw std::runtime_error("failed to open file: " + filepath); }
+        std::ifstream file(filepath, std::ios::binary | std::ios::ate);
+        if(!file) { throw std::runtime_error(FORMAT("Failed to open file: {}", filepath)); }
 
-        size_t fileSize = static_cast<size_t>(file.tellg());
-        std::vector<char> buffer(fileSize);
+        const std::streamsize size = file.tellg();
+        if(size <= 0) {
+            return {};  // Return empty vector for empty or unreadable file
+        }
 
-        file.seekg(0);
-        file.read(buffer.data(), NC_LI(fileSize));
+        std::vector<char> buffer;
+        buffer.resize(C_ST(size));
 
-        file.close();
+        file.seekg(0, std::ios::beg);
+        file.read(buffer.data(), size);
+
+        if(!file) { throw std::runtime_error(FORMAT("Failed to read the complete file: {}", filepath)); }
+
         return buffer;
     }
 
@@ -45,13 +49,15 @@ namespace mpvge {
         assert(configInfo.pipelineLayout != VK_NULL_HANDLE && "Cannot create graphics pipeline: no pipelineLayout provided in configInfo");
         assert(configInfo.renderPass != VK_NULL_HANDLE && "Cannot create graphics pipeline: no renderPass provided in configInfo");
 
-        auto vertCode = readFile(vertFilepath);
-        auto fragCode = readFile(fragFilepath);
+        const auto vertCode = readFile(vertFilepath);
+        const auto fragCode = readFile(fragFilepath);
         /*LINFO("Vertex Shader Code Size: {}", vertCode.size());
         LINFO("Fragment Shader Code Size: {}", fragCode.size());*/
 
         createShaderModule(vertCode, &vertShaderModule);
         createShaderModule(fragCode, &fragShaderModule);
+        device.setObjectName(vertShaderModule, "Vertex Shader Module");
+        device.setObjectName(fragShaderModule, "Fragment Shader Module");
 
         std::array<VkPipelineShaderStageCreateInfo, 2> shaderStages = {};
         shaderStages[0].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -85,7 +91,7 @@ namespace mpvge {
 
         VkGraphicsPipelineCreateInfo pipelineInfo{};
         pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
-        pipelineInfo.stageCount = 2;
+        pipelineInfo.stageCount = C_UI32T(shaderStages.size());
         pipelineInfo.pStages = shaderStages.data();
         pipelineInfo.pVertexInputState = &vertexInputInfo;
         pipelineInfo.pInputAssemblyState = &configInfo.inputAssemblyInfo;
@@ -105,6 +111,7 @@ namespace mpvge {
 
         VK_CHECK(vkCreateGraphicsPipelines(device.getDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline),
                  "failed to create graphics pipeline");
+        device.setObjectName(graphicsPipeline, "Graphics Pipeline");
     }
 
     void RenderPipeline::createShaderModule(const std::vector<char> &code, VkShaderModule *shaderModule) {
@@ -118,6 +125,7 @@ namespace mpvge {
 
     void RenderPipeline::bind(VkCommandBuffer commandBuffer) {
         vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
+        device.setObjectName(commandBuffer, "GP Command Buffer");
     }
 
     PipelineConfigInfo RenderPipeline::defaultPipelineConfigInfo(uint32_t width, uint32_t height) {
@@ -194,4 +202,4 @@ namespace mpvge {
 }  // namespace mpvge
    // clang-format off
 // NOLINTEND(*-include-cleaner, *-signed-bitwise, *-easily-swappable-parameters, *-use-anonymous-namespace, *-diagnostic-old-style-cast, *-pro-type-cstyle-cast, *-pro-type-member-init,*-member-init, *-pro-bounds-constant-array-index, *-qualified-auto, *-uppercase-literal-suffix)
-   // clang-format on
+// clang-format on

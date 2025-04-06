@@ -114,9 +114,7 @@ namespace mpvge {
 
     Device::~Device() {
         DESTROY_VK_HANDLE(commandPool, vkDestroyCommandPool(device, commandPool, nullptr));
-        LINFO("Command pool destroyed");
-        DESTROY_VK_HANDLE(physicalDevice, vkDestroyDevice(device, nullptr));
-        LINFO("Device destroyed");
+        DESTROY_VK_HANDLE(device, vkDestroyDevice(device, nullptr));
     }
 
     void Device::pickPhysicalDevice() {
