@@ -50,14 +50,12 @@ namespace mpvge {
         void queueInsertLabel(VkQueue queue, const char *labelName, const std::vector<float> &color) noexcept;
         void queueEndLabel(VkQueue queue) noexcept;
         template <typename T> void setObjectName(T objectHandle, const char *objectName) noexcept {
-            auto objectType = GetVulkanObjectType<T>(objectHandle);
-            psetObjectName(instance.get(), device, objectType, BC_UI64T(objectHandle), objectName);
+            psetObjectName(instance.get(), device, objectHandle, objectName);
         }
         template <typename T> void setObjectNames(const char *objectName, const std::vector<T> &objectHandles) noexcept {
             auto instanceHandle = instance.get();
-            auto objectType = GetVulkanObjectType<T>(objectHandles.front());
             for(auto [index, objectHandle] : objectHandles | std::views::enumerate) {
-                psetObjectName(instanceHandle, device, objectType, BC_UI64T(objectHandle), FORMAT("{} {}", objectName, index).c_str());
+                psetObjectName(instanceHandle, device, objectHandle, FORMAT("{} {}", objectName, index).c_str());
             }
         }
 
@@ -75,8 +73,20 @@ namespace mpvge {
         void pqueueBeginLabel(VkInstance instancein, VkQueue queue, const char *labelName, const std::vector<float> &color) noexcept;
         void pqueueInsertLabel(VkInstance instancein, VkQueue queue, const char *labelName, const std::vector<float> &color) noexcept;
         void pqueueEndLabel(VkInstance instancein, VkQueue queue) noexcept;
-        void psetObjectName(VkInstance instancein, VkDevice devicein, VkObjectType objectType, uint64_t objectHandle,
-                            const char *objectName) noexcept;
+        template <typename T>
+        void psetObjectName(VkInstance instancein, VkDevice devicein, T objectHandle, const char *objectName) noexcept {
+            if(!enableValidationLayers) { return; }
+            auto objectType = GetVulkanObjectType<T>(objectHandle);
+            auto func = std::bit_cast<PFN_vkSetDebugUtilsObjectNameEXT>(vkGetInstanceProcAddr(instancein, "vkSetDebugUtilsObjectNameEXT"));
+            if(func != nullptr) {
+                VkDebugUtilsObjectNameInfoEXT nameInfo{};
+                nameInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT;
+                nameInfo.objectType = objectType;
+                nameInfo.objectHandle = BC_UI64T(objectHandle);
+                nameInfo.pObjectName = objectName;
+                func(devicein, &nameInfo);
+            }
+        }
         bool enableValidationLayers;
         VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
         VkDevice device = VK_NULL_HANDLE;

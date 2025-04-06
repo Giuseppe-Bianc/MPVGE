@@ -79,21 +79,6 @@ namespace mpvge {
         if(func != nullptr) { func(queue); }
     }
 
-    // Wrapper per vkSetDebugUtilsObjectNameEXT
-    void Device::psetObjectName(VkInstance instancein, VkDevice devicein, VkObjectType objectType, uint64_t objectHandle,
-                                const char *objectName) noexcept {
-        if(!enableValidationLayers) { return; }
-        auto func = std::bit_cast<PFN_vkSetDebugUtilsObjectNameEXT>(vkGetInstanceProcAddr(instancein, "vkSetDebugUtilsObjectNameEXT"));
-        if(func != nullptr) {
-            VkDebugUtilsObjectNameInfoEXT nameInfo{};
-            nameInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT;
-            nameInfo.objectType = objectType;
-            nameInfo.objectHandle = objectHandle;
-            nameInfo.pObjectName = objectName;
-            func(devicein, &nameInfo);
-        }
-    }
-
     void Device::cmdBeginLabel(VkCommandBuffer commandBuffer, const char *labelName, const std::vector<float> &color) noexcept {
         pcmdBeginLabel(instance.get(), commandBuffer, labelName, color);
     }
@@ -118,13 +103,13 @@ namespace mpvge {
         createLogicalDevice(indices);
         createCommandPool(indices);
         auto instanceHandle = instance.get();
-        psetObjectName(instanceHandle, device, VK_OBJECT_TYPE_INSTANCE, BC_UI64T(instanceHandle), "Instance");
-        psetObjectName(instanceHandle, device, VK_OBJECT_TYPE_SURFACE_KHR, BC_UI64T(surface.get()), "Surface");
-        psetObjectName(instanceHandle, device, VK_OBJECT_TYPE_DEVICE, BC_UI64T(device), "Logical Device");
-        psetObjectName(instanceHandle, device, VK_OBJECT_TYPE_PHYSICAL_DEVICE, BC_UI64T(physicalDevice), "Physical Device");
-        psetObjectName(instanceHandle, device, VK_OBJECT_TYPE_QUEUE, BC_UI64T(graphicsQueue), "Graphics Queue");
-        psetObjectName(instanceHandle, device, VK_OBJECT_TYPE_QUEUE, BC_UI64T(presentQueue), "Present Queue");
-        psetObjectName(instanceHandle, device, VK_OBJECT_TYPE_COMMAND_POOL, BC_UI64T(commandPool), "Command Pool");
+        psetObjectName(instanceHandle, device, instanceHandle, "Instance");
+        psetObjectName(instanceHandle, device, surface.get(), "Surface");
+        psetObjectName(instanceHandle, device, device, "Logical Device");
+        psetObjectName(instanceHandle, device, physicalDevice, "Physical Device");
+        psetObjectName(instanceHandle, device, graphicsQueue, "Graphics Queue");
+        psetObjectName(instanceHandle, device, presentQueue, "Present Queue");
+        psetObjectName(instanceHandle, device, commandPool, "Command Pool");
     }
 
     Device::~Device() {
@@ -257,7 +242,7 @@ namespace mpvge {
         bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
         VK_CHECK(vkCreateBuffer(device, &bufferInfo, nullptr, &buffer), "failed to create vertex buffer!");
-        psetObjectName(instanceHandle, device, VK_OBJECT_TYPE_BUFFER, BC_UI64T(buffer), "Vertex Buffer");
+        psetObjectName(instanceHandle, device, buffer, "Vertex Buffer");
 
         VkMemoryRequirements memRequirements;
         vkGetBufferMemoryRequirements(device, buffer, &memRequirements);
@@ -268,7 +253,7 @@ namespace mpvge {
         allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, improperties);
 
         VK_CHECK(vkAllocateMemory(device, &allocInfo, nullptr, &bufferMemory), "failed to allocate vertex buffer memory!");
-        psetObjectName(instanceHandle, device, VK_OBJECT_TYPE_DEVICE_MEMORY, BC_UI64T(bufferMemory), "Vertex Buffer Memory");
+        psetObjectName(instanceHandle, device, bufferMemory, "Vertex Buffer Memory");
 
         vkBindBufferMemory(device, buffer, bufferMemory, 0);
     }
@@ -282,7 +267,7 @@ namespace mpvge {
 
         VkCommandBuffer commandBuffer{};
         vkAllocateCommandBuffers(device, &allocInfo, &commandBuffer);
-        psetObjectName(instanceHandle, device, VK_OBJECT_TYPE_COMMAND_BUFFER, BC_UI64T(commandBuffer), "Single Time Command Buffer");
+        psetObjectName(instanceHandle, device, commandBuffer, "Single Time Command Buffer");
 
         VkCommandBufferBeginInfo beginInfo{};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -359,8 +344,8 @@ namespace mpvge {
 
         VK_CHECK(vkAllocateMemory(device, &allocInfo, nullptr, &imageMemory), "failed to allocate image memory!");
         VK_CHECK(vkBindImageMemory(device, image, imageMemory, 0), "failed to bind image memory!");
-        psetObjectName(instance.get(), device, VK_OBJECT_TYPE_IMAGE, BC_UI64T(image), "Image");
-        psetObjectName(instance.get(), device, VK_OBJECT_TYPE_DEVICE_MEMORY, BC_UI64T(imageMemory), "Image Memory");
+        psetObjectName(instance.get(), device, image, "Image");
+        psetObjectName(instance.get(), device, imageMemory, "Image Memory");
     }
 
     uint32_t Device::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags improperties) {
