@@ -4,6 +4,7 @@
  */
 // NOLINTBEGIN(*-include-cleaner, *-pro-type-member-init,*-member-init, *-avoid-magic-numbers,*-magic-numbers, *-uppercase-literal-suffix)
 #include "MPVGE/Application.hpp"
+#include "MPVGE/FPSCounter.hpp"
 
 namespace mpvge {
     Application::Application() {
@@ -14,8 +15,11 @@ namespace mpvge {
     Application::~Application() { DESTROY_VK_HANDLE(pipelineLayout, vkDestroyPipelineLayout(device.getDevice(), pipelineLayout, nullptr)); }
 
     void Application::run() {
+        FPSCounter fpsCounter{window.getGLFWWindow(), wtile.data()};
         while(!window.shouldClose()) {
             glfwPollEvents();
+            fpsCounter.frameInTitle(false, false);
+            [[maybe_unused]]auto frameTime = C_F(fpsCounter.getFrameTime());
             drawFrame();
         }
 

@@ -7,6 +7,8 @@ add_library(mpvge_lib mpvge_lib.cpp
         ../../include/MPVGE/vulkanToString.hpp
         ../../include/MPVGE/vulkanCheck.hpp
         ../../include/MPVGE/VulkanLogInfoCallback.hpp
+        FPSCounter.cpp
+        ../../include/MPVGE/FPSCounter.hpp
         Application.cpp
         ../../include/MPVGE/Application.hpp
         Window.cpp
