@@ -19,7 +19,7 @@ namespace mpvge {
         while(!window.shouldClose()) {
             glfwPollEvents();
             fpsCounter.frameInTitle(false, false);
-            [[maybe_unused]]auto frameTime = C_F(fpsCounter.getFrameTime());
+            [[maybe_unused]] auto frameTime = C_F(fpsCounter.getFrameTime());
             drawFrame();
         }
 
