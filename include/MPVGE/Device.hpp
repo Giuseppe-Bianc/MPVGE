@@ -5,11 +5,11 @@
 // NOLINTBEGIN(*-include-cleaner)
 #pragma once
 
+#include "DebugUtil.hpp"
 #include "DeviceInfo.hpp"
 #include "Instance.hpp"
 #include "Surface.hpp"
 #include "headers.hpp"
-#include "DebugUtil.hpp"
 
 namespace mpvge {
 

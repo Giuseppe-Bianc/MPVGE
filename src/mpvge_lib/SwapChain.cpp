@@ -162,7 +162,7 @@ namespace mpvge {
         swapChainImages.resize(imageCount);
         vkGetSwapchainImagesKHR(deviceHandle, swapChain, &imageCount, swapChainImages.data());
 
-        mpvge::DebugUtil::getInstance().setObjectNames(swapChainImages,"SwapChain Image");
+        mpvge::DebugUtil::getInstance().setObjectNames(swapChainImages, "SwapChain Image");
 
         swapChainImageFormat = surfaceFormat.format;
         swapChainExtent = extent;
@@ -186,7 +186,7 @@ namespace mpvge {
             VK_CHECK(vkCreateImageView(device.getDevice(), &viewInfo, nullptr, &swapChainImageViews[i]),
                      "failed to create texture image view!");
         }
-        mpvge::DebugUtil::getInstance().setObjectNames(swapChainImageViews,"Swap Chain Image View");
+        mpvge::DebugUtil::getInstance().setObjectNames(swapChainImageViews, "Swap Chain Image View");
     }
 
     void SwapChain::createRenderPass() {
@@ -309,7 +309,7 @@ namespace mpvge {
             VK_CHECK(vkCreateImageView(device.getDevice(), &viewInfo, nullptr, &depthImageViews[i]),
                      "failed to create texture image view!");
         }
-        if (mpvge::DebugUtil::getInstance().isInitialized()) {
+        if(mpvge::DebugUtil::getInstance().isInitialized()) {
             mpvge::DebugUtil::getInstance().setObjectNames(depthImages, "Depth Image");
             mpvge::DebugUtil::getInstance().setObjectNames(depthImageViews, "Depth Image View");
             mpvge::DebugUtil::getInstance().setObjectNames(depthImageMemorys, "Depth Image Memory");
@@ -336,7 +336,7 @@ namespace mpvge {
                                   vkCreateFence(dev, &fenceInfo, nullptr, &inFlightFences[i]),
                                   "failed to create synchronization objects for a frame!");
         }
-        if (mpvge::DebugUtil::getInstance().isInitialized()) {
+        if(mpvge::DebugUtil::getInstance().isInitialized()) {
             mpvge::DebugUtil::getInstance().setObjectNames(imageAvailableSemaphores, "Image Available Semaphore");
             mpvge::DebugUtil::getInstance().setObjectNames(renderFinishedSemaphores, "Render Finished Semaphore");
             mpvge::DebugUtil::getInstance().setObjectNames(inFlightFences, "In Flight Fence");
