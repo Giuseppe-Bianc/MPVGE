@@ -103,13 +103,16 @@ namespace mpvge {
         createLogicalDevice(indices);
         createCommandPool(indices);
         auto instanceHandle = instance.get();
-        psetObjectName(instanceHandle, device, instanceHandle, "Instance");
-        psetObjectName(instanceHandle, device, surface.get(), "Surface");
-        psetObjectName(instanceHandle, device, device, "Logical Device");
-        psetObjectName(instanceHandle, device, physicalDevice, "Physical Device");
-        psetObjectName(instanceHandle, device, graphicsQueue, "Graphics Queue");
-        psetObjectName(instanceHandle, device, presentQueue, "Present Queue");
-        psetObjectName(instanceHandle, device, commandPool, "Command Pool");
+        debugUtilInitialize(instanceHandle, device);
+        if(mpvge::DebugUtil::getInstance().isInitialized()) {
+            mpvge::DebugUtil::getInstance().setObjectName(instanceHandle, "Instance");
+            mpvge::DebugUtil::getInstance().setObjectName(surface.get(), "Surface");
+            mpvge::DebugUtil::getInstance().setObjectName(device, "Logical Device");
+            mpvge::DebugUtil::getInstance().setObjectName(physicalDevice, "Physical Device");
+            mpvge::DebugUtil::getInstance().setObjectName(graphicsQueue, "Graphics Queue");
+            mpvge::DebugUtil::getInstance().setObjectName(presentQueue, "Present Queue");
+            mpvge::DebugUtil::getInstance().setObjectName(commandPool, "Command Pool");
+        }
     }
 
     Device::~Device() {
@@ -232,7 +235,6 @@ namespace mpvge {
 
     void Device::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags improperties, VkBuffer &buffer,
                               VkDeviceMemory &bufferMemory) {
-        auto instanceHandle = instance.get();
         VkBufferCreateInfo bufferInfo{};
         bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
         bufferInfo.size = size;
@@ -240,7 +242,6 @@ namespace mpvge {
         bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
         VK_CHECK(vkCreateBuffer(device, &bufferInfo, nullptr, &buffer), "failed to create vertex buffer!");
-        psetObjectName(instanceHandle, device, buffer, "Vertex Buffer");
 
         VkMemoryRequirements memRequirements;
         vkGetBufferMemoryRequirements(device, buffer, &memRequirements);
@@ -251,7 +252,10 @@ namespace mpvge {
         allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, improperties);
 
         VK_CHECK(vkAllocateMemory(device, &allocInfo, nullptr, &bufferMemory), "failed to allocate vertex buffer memory!");
-        psetObjectName(instanceHandle, device, bufferMemory, "Vertex Buffer Memory");
+        if(mpvge::DebugUtil::getInstance().isInitialized()) {
+            mpvge::DebugUtil::getInstance().setObjectName(buffer, "Vertex Buffer");
+            mpvge::DebugUtil::getInstance().setObjectName(bufferMemory, "Vertex Buffer Memory");
+        }
 
         vkBindBufferMemory(device, buffer, bufferMemory, 0);
     }
@@ -265,7 +269,9 @@ namespace mpvge {
 
         VkCommandBuffer commandBuffer{};
         vkAllocateCommandBuffers(device, &allocInfo, &commandBuffer);
-        psetObjectName(instanceHandle, device, commandBuffer, "Single Time Command Buffer");
+        if(mpvge::DebugUtil::getInstance().isInitialized()) {
+            mpvge::DebugUtil::getInstance().setObjectName(commandBuffer, "Command Buffer");
+        }
 
         VkCommandBufferBeginInfo beginInfo{};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -342,8 +348,10 @@ namespace mpvge {
 
         VK_CHECK(vkAllocateMemory(device, &allocInfo, nullptr, &imageMemory), "failed to allocate image memory!");
         VK_CHECK(vkBindImageMemory(device, image, imageMemory, 0), "failed to bind image memory!");
-        psetObjectName(instance.get(), device, image, "Image");
-        psetObjectName(instance.get(), device, imageMemory, "Image Memory");
+        if(mpvge::DebugUtil::getInstance().isInitialized()) {
+            mpvge::DebugUtil::getInstance().setObjectName(image, "Image");
+            mpvge::DebugUtil::getInstance().setObjectName(imageMemory, "Image Memory");
+        }
     }
 
     uint32_t Device::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags improperties) {

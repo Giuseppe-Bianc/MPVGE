@@ -7,6 +7,7 @@ add_library(mpvge_lib mpvge_lib.cpp
         ../../include/MPVGE/vulkanToString.hpp
         ../../include/MPVGE/vulkanCheck.hpp
         ../../include/MPVGE/VulkanLogInfoCallback.hpp
+        ../../include/MPVGE/DebugUtil.hpp
         FPSCounter.cpp
         ../../include/MPVGE/FPSCounter.hpp
         Application.cpp
@@ -29,7 +30,6 @@ add_library(mpvge_lib mpvge_lib.cpp
         ../../include/MPVGE/RenderPipeline.hpp
         SwapChain.cpp
         ../../include/MPVGE/SwapChain.hpp
-        ../../include/MPVGE/VulkanObjectType.hpp
 )
 
 get_target_property(target_name mpvge_lib NAME)

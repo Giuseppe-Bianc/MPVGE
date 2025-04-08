@@ -56,8 +56,10 @@ namespace mpvge {
 
         createShaderModule(vertCode, &vertShaderModule);
         createShaderModule(fragCode, &fragShaderModule);
-        device.setObjectName(vertShaderModule, "Vertex Shader Module");
-        device.setObjectName(fragShaderModule, "Fragment Shader Module");
+        if(mpvge::DebugUtil::getInstance().isInitialized()) {
+            mpvge::DebugUtil::getInstance().setObjectName(vertShaderModule, "Vertex Shader Module");
+            mpvge::DebugUtil::getInstance().setObjectName(fragShaderModule, "Fragment Shader Module");
+        }
 
         std::array<VkPipelineShaderStageCreateInfo, 2> shaderStages = {};
         shaderStages[0].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -111,7 +113,9 @@ namespace mpvge {
 
         VK_CHECK(vkCreateGraphicsPipelines(device.getDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline),
                  "failed to create graphics pipeline");
-        device.setObjectName(graphicsPipeline, "Graphics Pipeline");
+        if (mpvge::DebugUtil::getInstance().isInitialized()) {
+            mpvge::DebugUtil::getInstance().setObjectName(graphicsPipeline, "Graphics Pipeline");
+        }
     }
 
     void RenderPipeline::createShaderModule(const std::vector<char> &code, VkShaderModule *shaderModule) {
@@ -125,7 +129,9 @@ namespace mpvge {
 
     void RenderPipeline::bind(VkCommandBuffer commandBuffer) {
         vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
-        device.setObjectName(commandBuffer, "GP Command Buffer");
+        if (mpvge::DebugUtil::getInstance().isInitialized()) {
+            mpvge::DebugUtil::getInstance().setObjectName(commandBuffer, "GP Command Buffer");
+        }
     }
 
     PipelineConfigInfo RenderPipeline::defaultPipelineConfigInfo(uint32_t width, uint32_t height) {
@@ -202,4 +208,4 @@ namespace mpvge {
 }  // namespace mpvge
    // clang-format off
 // NOLINTEND(*-include-cleaner, *-signed-bitwise, *-easily-swappable-parameters, *-use-anonymous-namespace, *-diagnostic-old-style-cast, *-pro-type-cstyle-cast, *-pro-type-member-init,*-member-init, *-pro-bounds-constant-array-index, *-qualified-auto, *-uppercase-literal-suffix)
-   // clang-format on
+// clang-format on

@@ -34,7 +34,7 @@ namespace mpvge {
         pipelineLayoutInfo.pPushConstantRanges = nullptr;
         VK_CHECK(vkCreatePipelineLayout(device.getDevice(), &pipelineLayoutInfo, nullptr, &pipelineLayout),
                  "failed to create pipeline layout!");
-        device.setObjectName(pipelineLayout, "Pipeline Layout");
+        mpvge::DebugUtil::getInstance().setObjectName(pipelineLayout, "Pipeline Layout");
     }
     void Application::createPipeline() {
         auto pipelineConfig = RenderPipeline::defaultPipelineConfigInfo(lveSwapChain.width(), lveSwapChain.height());
@@ -54,8 +54,7 @@ namespace mpvge {
         allocInfo.commandBufferCount = static_cast<uint32_t>(commandBuffers.size());
 
         VK_CHECK(vkAllocateCommandBuffers(device.getDevice(), &allocInfo, commandBuffers.data()), "failed to allocate command buffers!");
-        device.setObjectNames("Command Buffers", commandBuffers);
-
+        mpvge::DebugUtil::getInstance().setObjectNames(commandBuffers, "Command Buffers");
         for(std::size_t i = 0; i < commandBuffers.size(); i++) {
             VkCommandBufferBeginInfo beginInfo{};
             beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;

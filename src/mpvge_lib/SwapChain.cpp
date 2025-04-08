@@ -152,7 +152,7 @@ namespace mpvge {
         createInfo.oldSwapchain = VK_NULL_HANDLE;
 
         VK_CHECK(vkCreateSwapchainKHR(deviceHandle, &createInfo, nullptr, &swapChain), "failed to create swap chain!");
-        device.setObjectName(swapChain, "Swap Chain");
+        mpvge::DebugUtil::getInstance().setObjectName(swapChain, "Swap Chain");
 
         // we only specified a minimum number of images in the swap chain, so the implementation is
         // allowed to create a swap chain with more. That's why we'll first query the final number of
@@ -161,7 +161,8 @@ namespace mpvge {
         vkGetSwapchainImagesKHR(deviceHandle, swapChain, &imageCount, nullptr);
         swapChainImages.resize(imageCount);
         vkGetSwapchainImagesKHR(deviceHandle, swapChain, &imageCount, swapChainImages.data());
-        device.setObjectNames("SwapChain Image", swapChainImages);
+
+        mpvge::DebugUtil::getInstance().setObjectNames(swapChainImages,"SwapChain Image");
 
         swapChainImageFormat = surfaceFormat.format;
         swapChainExtent = extent;
@@ -185,7 +186,7 @@ namespace mpvge {
             VK_CHECK(vkCreateImageView(device.getDevice(), &viewInfo, nullptr, &swapChainImageViews[i]),
                      "failed to create texture image view!");
         }
-        device.setObjectNames("Swap Chain Image View", swapChainImageViews);
+        mpvge::DebugUtil::getInstance().setObjectNames(swapChainImageViews,"Swap Chain Image View");
     }
 
     void SwapChain::createRenderPass() {
@@ -243,7 +244,7 @@ namespace mpvge {
         renderPassInfo.pDependencies = &dependency;
 
         VK_CHECK(vkCreateRenderPass(device.getDevice(), &renderPassInfo, nullptr, &renderPass), "failed to create render pass!");
-        device.setObjectName(renderPass, "Render Pass");
+        mpvge::DebugUtil::getInstance().setObjectName(renderPass, "Render Pass");
     }
 
     void SwapChain::createFramebuffers() {
@@ -264,7 +265,7 @@ namespace mpvge {
             VK_CHECK(vkCreateFramebuffer(deviceHandle, &framebufferInfo, nullptr, &swapChainFramebuffers[i]),
                      "failed to create framebuffer!");
         }
-        device.setObjectNames("Swap Chain Framebuffer", swapChainFramebuffers);
+        mpvge::DebugUtil::getInstance().setObjectNames(swapChainFramebuffers, "Swap Chain Framebuffer");
     }
 
     void SwapChain::createDepthResources() {
@@ -308,9 +309,11 @@ namespace mpvge {
             VK_CHECK(vkCreateImageView(device.getDevice(), &viewInfo, nullptr, &depthImageViews[i]),
                      "failed to create texture image view!");
         }
-        device.setObjectNames("Depth Image", depthImages);
-        device.setObjectNames("Depth Image View", depthImageViews);
-        device.setObjectNames("Depth Image Memory", depthImageMemorys);
+        if (mpvge::DebugUtil::getInstance().isInitialized()) {
+            mpvge::DebugUtil::getInstance().setObjectNames(depthImages, "Depth Image");
+            mpvge::DebugUtil::getInstance().setObjectNames(depthImageViews, "Depth Image View");
+            mpvge::DebugUtil::getInstance().setObjectNames(depthImageMemorys, "Depth Image Memory");
+        }
     }
 
     void SwapChain::createSyncObjects() {
@@ -333,9 +336,11 @@ namespace mpvge {
                                   vkCreateFence(dev, &fenceInfo, nullptr, &inFlightFences[i]),
                                   "failed to create synchronization objects for a frame!");
         }
-        device.setObjectNames("Image Available Semaphore", imageAvailableSemaphores);
-        device.setObjectNames("Render Finished Semaphore", renderFinishedSemaphores);
-        device.setObjectNames("In Flight Fence", inFlightFences);
+        if (mpvge::DebugUtil::getInstance().isInitialized()) {
+            mpvge::DebugUtil::getInstance().setObjectNames(imageAvailableSemaphores, "Image Available Semaphore");
+            mpvge::DebugUtil::getInstance().setObjectNames(renderFinishedSemaphores, "Render Finished Semaphore");
+            mpvge::DebugUtil::getInstance().setObjectNames(inFlightFences, "In Flight Fence");
+        }
     }
 
     VkSurfaceFormatKHR SwapChain::chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &availableFormats) {
