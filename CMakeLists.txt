@@ -120,7 +120,7 @@ include(cmake/PackageProject.cmake)
 # we know we want to ship
 MPVGE_package_project(
   TARGETS
-  mvpge
+  mpvge
   MPVGE_options
   MPVGE_warnings
   # FIXME: this does not work! CK
