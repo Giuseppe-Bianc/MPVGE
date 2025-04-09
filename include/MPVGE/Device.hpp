@@ -29,9 +29,9 @@ namespace mpvge {
         [[nodiscard]] VkQueue getGraphicsQueue() const noexcept { return graphicsQueue; }
         [[nodiscard]] VkQueue getPresentQueue() const noexcept { return presentQueue; }
 
-        SwapChainSupportDetails getSwapChainSupport() { return surface.querySwapChainSupport(physicalDevice); }
+        SwapChainSupportDetails getSwapChainSupport() const { return surface.querySwapChainSupport(physicalDevice); }
         uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags improperties);
-        QueueFamilyIndices findPhysicalQueueFamilies() { return surface.getQueueFamilyIndices(physicalDevice); }
+        QueueFamilyIndices findPhysicalQueueFamilies() const { return surface.getQueueFamilyIndices(physicalDevice); }
         VkFormat findSupportedFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
 
         // Buffer Helper Functions

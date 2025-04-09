@@ -8,26 +8,20 @@
 FPSCounter::FPSCounter(GLFWwindow *window, std::string_view title) noexcept
   : last_time(vnd::clock::now()), frames(0), fps(0.0L), ms_per_frame(0.0L), m_window(window), m_title(title) {}
 
-void FPSCounter::frame(bool vsync, bool showMax) {
+void FPSCounter::frame(bool vsync, [[maybe_unused]] bool showMax) {
     updateFPS();
-    if(showMax) {
-        LINFO("{:.3LF} fps/{} - Max: {:.3LF} - VSync: {}", fps, ms_per_frameComposition, max_fps, vsync ? "Enabled" : "Disabled");
-    } else {
-        LINFO("{:.3LF} fps/{} - VSync: {}", fps, ms_per_frameComposition, vsync ? "Enabled" : "Disabled");
-    }
+    ms_per_frameComposition = transformTime(ms_per_frame);
+    const auto vsyncStr = vsync ? "Enabled" : "Disabled";
+    auto uifps = C_UI32T(fps);
+    LINFO("{} fps/{} - VSync: {}", uifps, ms_per_frameComposition, vsyncStr);
 }
 
-void FPSCounter::frameInTitle(bool vsync, bool showMax) {
+void FPSCounter::frameInTitle(bool vsync, [[maybe_unused]] bool showMax) {
     updateFPS();
-    if(showMax) {
-        glfwSetWindowTitle(m_window, FORMATST("{} - {:.3LF} fps/{} - Max: {:.3LF} - VSync: {}", m_title, fps, ms_per_frameComposition,
-                                              max_fps, vsync ? "Enabled" : "Disabled")
-                                         .c_str());
-    } else {
-        glfwSetWindowTitle(
-            m_window,
-            FORMATST("{} - {:.3LF} fps/{} - VSync: {}", m_title, fps, ms_per_frameComposition, vsync ? "Enabled" : "Disabled").c_str());
-    }
+    ms_per_frameComposition = transformTime(ms_per_frame);
+    const auto vsyncStr = vsync ? "Enabled" : "Disabled";
+    auto uifps = C_UI32T(fps);
+    glfwSetWindowTitle(m_window, FORMATST("{} - {} fps/{} - VSync: {}", m_title, uifps, ms_per_frameComposition, vsyncStr).c_str());
 }
 
 DISABLE_WARNINGS_PUSH(26447)
@@ -44,7 +38,7 @@ std::string FPSCounter::transformTime(const long double inputTimeMilli) noexcept
     // Round the final nanoseconds from the remaining fraction.
     const auto durationNs = round<nanoseconds>(remainderAfterUs);
 
-    return FORMAT("{}ms,{}us,{}ns", C_LD(durationMs.count()), C_LD(durationUs.count()), C_LD(durationNs.count()));
+    return FORMAT("{}ms,{}us,{}ns", durationMs.count(), durationUs.count(), durationNs.count());
 }
 DISABLE_WARNINGS_POP()
 
@@ -62,9 +56,8 @@ void FPSCounter::updateFPS() noexcept {
         ms_per_frame = time_step.get_millis() / ldframes;
         frames = 0;
         totalTime = 0;
-        max_fps = std::max(max_fps, fps);
+        // max_fps = std::max(max_fps, fps);
     }
-    ms_per_frameComposition = transformTime(ms_per_frame);
 }
 
 long double FPSCounter::getFPS() const noexcept { return fps; }

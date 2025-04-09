@@ -53,7 +53,7 @@ namespace vnd {
             const auto durationUs = duration_cast<microseconds>(durationmicros);
             const auto durationNs = round<nanoseconds>(durationmicros - durationUs);
 
-            return FORMAT("{}us,{}ns", C_LD(durationUs.count()), C_LD(durationNs.count()));
+            return FORMAT("{}us,{}ns", durationUs.count(), durationNs.count());
         }
 
         [[nodiscard]] std::string transformTimeMilli(const long double inputTimeMilli) const noexcept {
@@ -65,7 +65,7 @@ namespace vnd {
             const auto durationUs = round<microseconds>(durationmils - durationMs);
             const auto durationNs = round<nanoseconds>(durationmils - durationMs - durationUs);
 
-            return FORMAT("{}ms,{}us,{}ns", C_LD(durationMs.count()), C_LD(durationUs.count()), C_LD(durationNs.count()));
+            return FORMAT("{}ms,{}us,{}ns", durationMs.count(), durationUs.count(), durationNs.count());
         }
 
         [[nodiscard]] std::string transformTimeSeconds(const long double inputTimeSeconds) const noexcept {
@@ -78,8 +78,7 @@ namespace vnd {
             const auto durationUs = round<microseconds>(durationSecs - durationSec - durationMs);
             const auto durationNs = round<nanoseconds>(durationSecs - durationSec - durationMs - durationUs);
 
-            return FORMAT("{}s,{}ms,{}us,{}ns", C_LD(durationSec.count()), C_LD(durationMs.count()), C_LD(durationUs.count()),
-                          C_LD(durationNs.count()));
+            return FORMAT("{}s,{}ms,{}us,{}ns", durationSec.count(), durationMs.count(), durationUs.count(), durationNs.count());
         }
 
         [[nodiscard]] std::string toString() const noexcept {
