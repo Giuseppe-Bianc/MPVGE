@@ -19,6 +19,7 @@ public:
 
 private:
     [[nodiscard]] std::string transformTime(const long double inputTimeMilli) noexcept;
+    [[nodiscard]] std::string isVsync(bool vsync);
     vnd::time_point last_time;
     int frames;
     long double fps;

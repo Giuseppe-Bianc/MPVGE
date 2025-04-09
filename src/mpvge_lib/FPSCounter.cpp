@@ -8,10 +8,11 @@
 FPSCounter::FPSCounter(GLFWwindow *window, std::string_view title) noexcept
   : last_time(vnd::clock::now()), frames(0), fps(0.0L), ms_per_frame(0.0L), m_window(window), m_title(title) {}
 
+std::string FPSCounter::isVsync(bool vsync) { return std::string(vsync ? "Enabled" : "Disabled"); }
 void FPSCounter::frame(bool vsync, [[maybe_unused]] bool showMax) {
     updateFPS();
     ms_per_frameComposition = transformTime(ms_per_frame);
-    const auto vsyncStr = vsync ? "Enabled" : "Disabled";
+    auto vsyncStr = isVsync(vsync);
     auto uifps = C_UI32T(fps);
     LINFO("{} fps/{} - VSync: {}", uifps, ms_per_frameComposition, vsyncStr);
 }
@@ -19,7 +20,7 @@ void FPSCounter::frame(bool vsync, [[maybe_unused]] bool showMax) {
 void FPSCounter::frameInTitle(bool vsync, [[maybe_unused]] bool showMax) {
     updateFPS();
     ms_per_frameComposition = transformTime(ms_per_frame);
-    const auto vsyncStr = vsync ? "Enabled" : "Disabled";
+    auto vsyncStr = isVsync(vsync);
     auto uifps = C_UI32T(fps);
     glfwSetWindowTitle(m_window, FORMATST("{} - {} fps/{} - VSync: {}", m_title, uifps, ms_per_frameComposition, vsyncStr).c_str());
 }
