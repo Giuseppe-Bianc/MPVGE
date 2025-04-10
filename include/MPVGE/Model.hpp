@@ -19,7 +19,7 @@ namespace mpvge {
             static std::vector<VkVertexInputAttributeDescription> getAttributeDescriptions();
         };
         Model(Device &devicein, const std::vector<Vertex> &vertices);
-        ~Model() = default;
+        ~Model();
         Model(const Model &) = delete;
         Model &operator=(const Model &) = delete;
 

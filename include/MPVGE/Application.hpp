@@ -8,6 +8,7 @@
 
 #include "Device.hpp"
 #include "Instance.hpp"
+#include "Model.hpp"
 #include "RenderPipeline.hpp"
 #include "Surface.hpp"
 #include "SwapChain.hpp"
@@ -23,6 +24,7 @@ namespace mpvge {
         void run();
 
     private:
+        void loadModels();
         void createPipelineLayout();
         void createPipeline();
         void createCommandBuffers();
@@ -40,6 +42,7 @@ namespace mpvge {
         std::unique_ptr<RenderPipeline> lvePipeline;
         VkPipelineLayout pipelineLayout;
         std::vector<VkCommandBuffer> commandBuffers;
+        std::unique_ptr<Model> model;
     };
 
 }  // namespace mpvge
