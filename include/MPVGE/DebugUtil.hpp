@@ -75,6 +75,7 @@ namespace mpvge {
         }
     }
 
+    // NOLINTBEGIN(*-function-cognitive-complexity)
     template <typename T> constexpr VkObjectType DebugUtil::getObjectType() {
         if constexpr(std::is_same_v<T, VkInstance>) {
             return VK_OBJECT_TYPE_INSTANCE;
@@ -132,7 +133,6 @@ namespace mpvge {
             return VK_OBJECT_TYPE_DESCRIPTOR_UPDATE_TEMPLATE;
         } else if constexpr(std::is_same_v<T, VkPrivateDataSlot>) {
             return VK_OBJECT_TYPE_PRIVATE_DATA_SLOT;
-
 #ifdef VK_KHR_surface
         } else if constexpr(std::is_same_v<T, VkSurfaceKHR>) {
             return VK_OBJECT_TYPE_SURFACE_KHR;
@@ -227,6 +227,7 @@ namespace mpvge {
             return VK_OBJECT_TYPE_UNKNOWN;
         }
     }
+    // NOLINTEND(*-function-cognitive-complexity)
 }  // namespace mpvge
 /*
 #define DBG_VK_SCOPE(_cmd) mpvge::DebugUtil::ScopedCmdLabel scopedCmdLabel(_cmd, __FUNCTION__)
