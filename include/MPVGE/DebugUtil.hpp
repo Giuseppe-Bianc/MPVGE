@@ -19,10 +19,12 @@ namespace mpvge {
         void init(VkInstance instance, VkDevice device) {
             m_device = device;
             m_instance = instance;
+            m_setObjectNameFunc = std::bit_cast<PFN_vkSetDebugUtilsObjectNameEXT>(
+                vkGetInstanceProcAddr(instance, "vkSetDebugUtilsObjectNameEXT"));
         }
-        VkInstance getVkInstance() const { return m_instance; }
+        [[nodiscard]] VkInstance getVkInstance() const { return m_instance; }
 
-        bool isInitialized() const { return m_device != VK_NULL_HANDLE; }
+        [[nodiscard]] bool isInitialized() const { return m_device != VK_NULL_HANDLE; }
 
         template <typename T> void setObjectName(T object, const std::string &name) const;
         template <typename T> void setObjectNames(std::vector<T> object, const std::string &name) const;
@@ -50,6 +52,7 @@ namespace mpvge {
         DebugUtil() = default;
         VkDevice m_device{VK_NULL_HANDLE};
         VkInstance m_instance{VK_NULL_HANDLE};
+        PFN_vkSetDebugUtilsObjectNameEXT m_setObjectNameFunc = nullptr;
 
         template <typename T> static constexpr VkObjectType getObjectType();
     };
@@ -57,12 +60,10 @@ namespace mpvge {
     template <typename T> void DebugUtil::setObjectName(T object, const std::string &name) const {
         constexpr VkObjectType objectType = getObjectType<T>();
         if constexpr(objectType != VK_OBJECT_TYPE_UNKNOWN) {
-            auto func = std::bit_cast<PFN_vkSetDebugUtilsObjectNameEXT>(vkGetInstanceProcAddr(m_instance, "vkSetDebugUtilsObjectNameEXT"));
-            if(func != nullptr) {
-                VkDebugUtilsObjectNameInfoEXT s{VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT, nullptr, objectType, BC_UI64T(object),
-                                                name.c_str()};
-                func(m_device, &s);
-            }
+            VkDebugUtilsObjectNameInfoEXT s{VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT, nullptr, objectType, BC_UI64T(object),
+                                            name.c_str()};
+            if(!m_setObjectNameFunc) { return; }
+            m_setObjectNameFunc(m_device, &s);
         }
     }
     template <typename T> void DebugUtil::setObjectNames(std::vector<T> object, const std::string &name) const {
