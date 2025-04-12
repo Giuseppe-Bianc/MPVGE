@@ -5,7 +5,7 @@
 // clang-format off
 // NOLINTBEGIN(*-include-cleaner, *-pro-type-member-init, *-member-init, *-pro-type-cstyle-cast, *-pro-type-cstyle-cast, *-signed-bitwise)
 // clang-format on
-#include "Model.hpp"
+#include "../../include/MPVGE/Model.hpp"
 
 namespace mpvge {
 
@@ -14,8 +14,8 @@ namespace mpvge {
     Model::Model(Device &devicein, const std::vector<Vertex> &vertices) : device{devicein} { createVertexBuffers(vertices); }
 
     Model::~Model() {
-        vkDestroyBuffer(device.getDevice(), vertexBuffer, nullptr);
-        vkFreeMemory(device.getDevice(), vertexBufferMemory, nullptr);
+        DESTROY_VK_HANDLE(vertexBuffer, vkDestroyBuffer(device.getDevice(), vertexBuffer, nullptr));
+        DESTROY_VK_HANDLE(vertexBufferMemory, vkFreeMemory(device.getDevice(), vertexBufferMemory, nullptr));
     }
 
     void Model::createVertexBuffers(const std::vector<Vertex> &vertices) {

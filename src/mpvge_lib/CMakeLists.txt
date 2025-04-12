@@ -30,7 +30,7 @@ add_library(mpvge_lib mpvge_lib.cpp
         ../../include/MPVGE/RenderPipeline.hpp
         SwapChain.cpp
         ../../include/MPVGE/SwapChain.hpp
-        ../../include/MPVGE/Model.cpp
+        Model.cpp
         ../../include/MPVGE/Model.hpp
 )
 
