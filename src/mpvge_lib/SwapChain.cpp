@@ -152,7 +152,7 @@ namespace mpvge {
         createInfo.oldSwapchain = VK_NULL_HANDLE;
 
         VK_CHECK(vkCreateSwapchainKHR(deviceHandle, &createInfo, nullptr, &swapChain), "failed to create swap chain!");
-        mpvge::DebugUtil::getInstance().setObjectName(swapChain, "Swap Chain");
+        mpvge::DebugUtil::getInstance().setObjectNameIfinit(swapChain, "Swap Chain");
 
         // we only specified a minimum number of images in the swap chain, so the implementation is
         // allowed to create a swap chain with more. That's why we'll first query the final number of

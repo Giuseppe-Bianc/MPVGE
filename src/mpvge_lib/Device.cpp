@@ -269,9 +269,8 @@ namespace mpvge {
 
         VkCommandBuffer commandBuffer{};
         vkAllocateCommandBuffers(device, &allocInfo, &commandBuffer);
-        if(mpvge::DebugUtil::getInstance().isInitialized()) {
-            mpvge::DebugUtil::getInstance().setObjectName(commandBuffer, "Command Buffer");
-        }
+
+            mpvge::DebugUtil::getInstance().setObjectNameIfinit(commandBuffer, "Command Buffer");
 
         VkCommandBufferBeginInfo beginInfo{};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;

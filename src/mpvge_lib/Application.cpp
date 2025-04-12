@@ -41,7 +41,7 @@ namespace mpvge {
         pipelineLayoutInfo.pPushConstantRanges = nullptr;
         VK_CHECK(vkCreatePipelineLayout(device.getDevice(), &pipelineLayoutInfo, nullptr, &pipelineLayout),
                  "failed to create pipeline layout!");
-        mpvge::DebugUtil::getInstance().setObjectName(pipelineLayout, "Pipeline Layout");
+        mpvge::DebugUtil::getInstance().setObjectNameIfinit(pipelineLayout, "Pipeline Layout");
     }
     void Application::createPipeline() {
         auto pipelineConfig = RenderPipeline::defaultPipelineConfigInfo(lveSwapChain.width(), lveSwapChain.height());

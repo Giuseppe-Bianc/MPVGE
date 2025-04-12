@@ -22,31 +22,13 @@ namespace mpvge {
             m_setObjectNameFunc = std::bit_cast<PFN_vkSetDebugUtilsObjectNameEXT>(
                 vkGetInstanceProcAddr(instance, "vkSetDebugUtilsObjectNameEXT"));
         }
-        [[nodiscard]] VkInstance getVkInstance() const { return m_instance; }
 
         [[nodiscard]] bool isInitialized() const { return m_device != VK_NULL_HANDLE; }
 
+        template <typename T> void setObjectNameIfinit(T object, const std::string &name) const;
         template <typename T> void setObjectName(T object, const std::string &name) const;
-        template <typename T> void setObjectNames(std::vector<T> object, const std::string &name) const;
-        template <typename T> void setObjectNamesm(std::vector<T> object, const std::string &name) const;
-
-        /*class ScopedCmdLabel {
-        public:
-            ScopedCmdLabel(VkCommandBuffer cmdBuf, const std::string &label) : m_cmdBuf(cmdBuf) {
-                auto func = std::bit_cast<PFN_vkCmdBeginDebugUtilsLabelEXT>(vkGetInstanceProcAddr(getInstance().getVkInstance(),
-        "vkCmdBeginDebugUtilsLabelEXT")); if(func != nullptr) { VkDebugUtilsLabelEXT s{VK_STRUCTURE_TYPE_DEBUG_UTILS_LABEL_EXT, nullptr,
-        label.c_str(), {1.0f, 1.0f, 1.0f, 1.0f}}; func(m_cmdBuf, &s);
-                }
-            }
-
-            ~ScopedCmdLabel() {
-                auto func = std::bit_cast<PFN_vkCmdEndDebugUtilsLabelEXT>(vkGetInstanceProcAddr(getInstance().getVkInstance(),
-        "vkCmdEndDebugUtilsLabelEXT")); if(func != nullptr) { func(m_cmdBuf); }
-            }
-
-        private:
-            VkCommandBuffer m_cmdBuf;
-        };*/
+        template <typename T> void setObjectNames(const std::vector<T> &object, const std::string &name) const;
+        template <typename T> void setObjectNamesm(const std::vector<T> &object, const std::string &name) const;
 
     private:
         DebugUtil() = default;
@@ -57,6 +39,10 @@ namespace mpvge {
         template <typename T> static constexpr VkObjectType getObjectType();
     };
 
+    template <typename T> void DebugUtil::setObjectNameIfinit(T object, const std::string &name) const {
+        if(isInitialized()) { setObjectName(object, name); }
+    }
+
     template <typename T> void DebugUtil::setObjectName(T object, const std::string &name) const {
         constexpr VkObjectType objectType = getObjectType<T>();
         if constexpr(objectType != VK_OBJECT_TYPE_UNKNOWN) {
@@ -66,10 +52,10 @@ namespace mpvge {
             m_setObjectNameFunc(m_device, &s);
         }
     }
-    template <typename T> void DebugUtil::setObjectNames(std::vector<T> object, const std::string &name) const {
+    template <typename T> void DebugUtil::setObjectNames(const std::vector<T> &object, const std::string &name) const {
         if(isInitialized()) { setObjectNamesm(object, name); }
     }
-    template <typename T> void DebugUtil::setObjectNamesm(std::vector<T> object, const std::string &name) const {
+    template <typename T> void DebugUtil::setObjectNamesm(const std::vector<T> &object, const std::string &name) const {
         for(const auto &[index, objectHandle] : object | std::views::enumerate) {
             setObjectName(objectHandle, FORMAT("{} {}", name, index));
         }
@@ -229,24 +215,6 @@ namespace mpvge {
     }
     // NOLINTEND(*-function-cognitive-complexity)
 }  // namespace mpvge
-/*
-#define DBG_VK_SCOPE(_cmd) mpvge::DebugUtil::ScopedCmdLabel scopedCmdLabel(_cmd, __FUNCTION__)
-#define DBG_VK_NAME(obj)                                                                                                                   \
-    if(mpvge::DebugUtil::getInstance().isInitialized())                                                                                    \
-    mpvge::DebugUtil::getInstance().setObjectName(                                                                                         \
-        obj,                                                                                                                               \
-        std::string(#obj) + "@" +                                                                                                          \
-            (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : (strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 : __FILE__)) +   \
-            ":" + std::to_string(__LINE__))
-#define DBG_VK_NAME2(obj, objName)                                                                                                         \
-    if(mpvge::DebugUtil::getInstance().isInitialized())                                                                                    \
-    mpvge::DebugUtil::getInstance().setObjectName(                                                                                         \
-        obj,                                                                                                                               \
-        objName + "@" +                                                                                                      \
-            (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : (strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 : __FILE__)) +   \
-            ":" + std::to_string(__LINE__))
-
-*/
 
 inline void debugUtilInitialize(VkInstance instance, VkDevice device) { mpvge::DebugUtil::getInstance().init(instance, device); }
 // NOLINTEND(*-include-cleaner, *-pro-type-member-init, *-member-init, *-pro-type-cstyle-cast, *-pro-type-cstyle-cast)

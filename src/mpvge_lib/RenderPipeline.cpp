@@ -117,9 +117,8 @@ namespace mpvge {
 
         VK_CHECK(vkCreateGraphicsPipelines(device.getDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline),
                  "failed to create graphics pipeline");
-        if(mpvge::DebugUtil::getInstance().isInitialized()) {
-            mpvge::DebugUtil::getInstance().setObjectName(graphicsPipeline, "Graphics Pipeline");
-        }
+
+        mpvge::DebugUtil::getInstance().setObjectNameIfinit(graphicsPipeline, "Graphics Pipeline");
     }
 
     void RenderPipeline::createShaderModule(const std::vector<char> &code, VkShaderModule *shaderModule) {
@@ -133,9 +132,7 @@ namespace mpvge {
 
     void RenderPipeline::bind(VkCommandBuffer commandBuffer) {
         vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
-        if(mpvge::DebugUtil::getInstance().isInitialized()) {
-            mpvge::DebugUtil::getInstance().setObjectName(commandBuffer, "GP Command Buffer");
-        }
+        mpvge::DebugUtil::getInstance().setObjectNameIfinit(commandBuffer, "GP Command Buffer");
     }
 
     PipelineConfigInfo RenderPipeline::defaultPipelineConfigInfo(uint32_t width, uint32_t height) {
@@ -212,4 +209,4 @@ namespace mpvge {
 }  // namespace mpvge
    // clang-format off
 // NOLINTEND(*-include-cleaner, *-signed-bitwise, *-easily-swappable-parameters, *-use-anonymous-namespace, *-diagnostic-old-style-cast, *-pro-type-cstyle-cast, *-pro-type-member-init,*-member-init, *-pro-bounds-constant-array-index, *-qualified-auto, *-uppercase-literal-suffix)
-   // clang-format on
+// clang-format on
