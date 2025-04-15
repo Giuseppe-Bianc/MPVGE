@@ -8,6 +8,7 @@
 #include "MPVGE/RenderPipeline.hpp"
 
 #include "MPVGE/Model.hpp"
+// #define INDEPTH
 
 namespace mpvge {
 
@@ -25,7 +26,9 @@ namespace mpvge {
     }
 
     std::vector<char> RenderPipeline::readFile(const std::string &filepath) {
+#ifdef INDEPTH
         vnd::AutoTimer timer{std::format("Read File {}", filepath)};
+#endif
 
         std::ifstream file(filepath, std::ios::binary | std::ios::ate);
         if(!file) { throw std::runtime_error(FORMAT("Failed to open file: {}", filepath)); }

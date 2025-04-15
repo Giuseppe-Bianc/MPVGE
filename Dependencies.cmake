@@ -33,6 +33,13 @@ function(MPVGE_setup_dependencies)
             "GLFW_BUILD_DOCS OFF"
     )
   endif()
+  if (NOT TARGET tinyobjloader)
+    CPMAddPackage(
+            NAME tinyobjloader
+            GIT_REPOSITORY https://github.com/tinyobjloader/tinyobjloader
+            GIT_TAG release # Use "master" for the latest version
+    )
+  endif ()
   if (NOT TARGET glm::glm)
     CPMAddPackage(
             NAME glm
